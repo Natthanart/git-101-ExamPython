@@ -1,0 +1,1773 @@
+<!DOCTYPE html>
+<html>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Kanit", sans-serif;
+    }
+
+    #loading {
+        display: none;
+        position: fixed;
+        z-index: 999;
+        top: 50%;
+        left: 50%;
+        width: 100px;
+        height: 100px;
+        margin: -50px 0 0 -50px;
+        border: 16px solid #f3f3f3;
+        border-radius: 50%;
+        border-top: 16px solid #3498db;
+        width: 120px;
+        height: 120px;
+        -webkit-animation: spin 2s linear infinite;
+        animation: spin 2s linear infinite;
+    }
+
+
+    .hrTitle {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        align-items: center;
+        column-gap: 1.6rem;
+    }
+
+    .hrTitle::before,
+    .hrTitle::after {
+        content: "";
+        height: 2px;
+        background-color: #ffc107;
+        display: block;
+    }
+
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    #overlay {
+        position: fixed;
+        /* Sit on top of the page content */
+        display: none;
+        /* Hidden by default */
+        width: 100%;
+        /* Full width (cover the whole page) */
+        height: 100%;
+        /* Full height (cover the whole page) */
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        /* Black background with opacity */
+        z-index: 500;
+        /* Specify a stack order in case you're using a different order for other elements */
+        cursor: pointer;
+        /* Add a pointer on hover */
+    }
+
+    @-webkit-keyframes spin {
+        0% {
+            -webkit-transform: rotate(0deg);
+        }
+
+        100% {
+            -webkit-transform: rotate(360deg);
+        }
+    }
+
+    @keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+    @media only screen and (max-width: 800px) {
+
+        /* Force table to not be like tables anymore */
+        #no-more-tables table,
+        #no-more-tables thead,
+        #no-more-tables tbody,
+        #no-more-tables th,
+        #no-more-tables td,
+        #no-more-tables tr {
+            display: block;
+            border: none;
+        }
+
+        /* Hide table headers (but not display: none;, for accessibility) */
+        #no-more-tables thead tr {
+            position: absolute;
+            top: -9999px;
+            left: -9999px;
+        }
+
+        #no-more-tables tr {
+            border: 1px solid #ccc;
+        }
+
+        #no-more-tables td {
+            /* Behave like a "row" */
+            border: none;
+            border-bottom: 1px solid #eee;
+            position: relative;
+            padding-left: 50%;
+            white-space: normal;
+            text-align: left;
+        }
+
+        #no-more-tables td:before {
+            /* Now like a table header */
+            position: absolute;
+            /* Top/left values mimic padding */
+            top: 6px;
+            left: 6px;
+            width: 45%;
+            padding-right: 10px;
+            white-space: nowrap;
+            text-align: left;
+            font-weight: bold;
+        }
+
+        /*
+    Label the data
+    */
+        #no-more-tables td:before {
+            content: attr(data-title);
+        }
+    }
+
+    #HistoryLi li {
+        border: none;
+        background: none;
+    }
+
+    .image-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: auto;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .zoom-image {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+        transition: transform 0.2s ease;
+        position: relative;
+    }
+</style>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>มหาวิทยาลัยเฉลิมกาญจนา</title>
+    <link rel="stylesheet" href="https://pyscript.net/releases/2024.1.1/core.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+        integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- <link rel="stylesheet" href="../static/assets/js/thdoan-magnify-cca1561/css/magnify.css"> -->
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div id="loading"></div>
+        <div id="overlay"></div>
+
+        <div class="row my-3">
+            <div class="col-md">
+                <div class="card rounded-4 text-bg-primary" style="border: none;">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-auto">
+                                <a class="btn" role="button"><i class="fa-solid fa-circle-arrow-left fa-2xl"
+                                        style="color: #fff;"></i></a>
+                            </div>
+                            <div class="col">
+                                <center>
+                                    <h3>ตรวจข้อสอบ</h3>
+                                </center>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row d-flex justify-content-center">
+            <div class="col-md-9 my-3">
+                <h3 class="hrTitle">แก้ปัญหา</h3>
+            </div>
+        </div>
+
+        <div class="row d-flex align-items-end gap-2 mb-3">
+            <div class="col-md-auto mb-3">
+                <div id="buttonContainer"></div>
+            </div>
+            <div class="col-md-auto">
+                <div class="input-group mb-3">
+                    <label class="input-group-text">ประเภทการสอบ <i class="fa-solid fa-star-of-life"
+                            style="color: red; margin-left: 2%;"></i></label>
+                    <select class="form-select" id="SetExamType" onchange="checkConditionAndDisplayButton()">
+                        <option selected disabled>กรุณาเลือก...</option>
+                        <option value="สอบปลายภาค">สอบปลายภาค</option>
+                        <option value="สอบย้อนหลัง">สอบย้อนหลัง</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        {% if Upload_count %}
+        <p style="color: black;">อัพโหลดไฟล์ทั้งหมด {{ Upload_count }} ไฟล์ </p>
+        <p style="color: green;">อัพโหลดสำเร็จทั้งหมด {{ Upload_Successful }} ไฟล์ </p>
+        <p style="color: red;">อัพโหลดล้มเหลวทั้งหมด {{ Upload_Error }} ไฟล์ </p>
+        <p style="color: red;">ต้องแก้ไขทั้งหมด {{ Upload_Recheck }} ไฟล์ </p>
+        <p style="color: red;">ต้องถ่ายใหม่ทั้งหมด {{ Upload_Retake }} ไฟล์ </p>
+
+        {% endif %}
+
+        <div class="table-responsive" id="no-more-tables">
+            <table class="table table-bordered col-sm-12 table-striped table-condensed table-hover cf">
+                <thead class="cf">
+                    <tr>
+                        <th scope="col">
+                            <center>ลำดับ</center>
+                        </th>
+                        <th scope="col">
+                            <center>เลขประจำตัว</center>
+                        </th>
+                        <th scope="col">
+                            <center>ชื่อ-นามสกุล</center>
+                        </th>
+                        <th scope="col">
+                            <center>รหัสวิชา</center>
+                        </th>
+                        <th scope="col">
+                            <center>ชื่อวิชา</center>
+                        </th>
+                        <th scope="col">
+                            <center>ผลการสอบ</center>
+                        </th>
+                        <th scope="col">
+                            <center>ประเภทการสอบ</center>
+                        </th>
+                        <th scope="col">
+                            <center>ผลการถ่ายกระดาษ</center>
+                        </th>
+                        <th scope="col">
+                            <center>รูปภาพ</center>
+                        </th>
+                        <th scope="col">
+                            <center>หมายเหตุ</center>
+                        </th>
+                        <th scope="col">
+                            <center>ปัญหา</center>
+                        </th>
+                        <th scope="col">
+                            <center>แก้ปัญหา</center>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="row">
+            <div class="col-md">
+                <div class="d-grid gap-2 col-6 mx-auto my-3">
+                    <button class="btn btn-success myStyleBtn_Filled" type="button" onclick="EditFormAnswer('2',0)"><i
+                            class="fa-solid fa-pen"></i>
+                        แก้ไข</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal History -->
+        <div class="modal fade" id="History" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+            aria-labelledby="HistoryLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="HistoryLabel"><i class="fa-solid fa-clock-rotate-left"></i>
+                            ประวัติ</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="list-group">
+                            <div id="HistoryLi"></div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Option -->
+        <div class="modal fade" id="Option" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+            aria-labelledby="OptionLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="OptionLabel"><i class="fa-solid fa-triangle-exclamation"></i>
+                            แก้ปัญหา</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <span id="showIndex" hidden></span>
+                        <span id="IDNumberold" hidden></span>
+                        <span id="CourseIDold" hidden></span>
+                        <div id="OptionModalbody"></div>
+                        <fieldset class="mb-3" id="fieldIDNumber">
+                            <legend>ค้นหาข้อมูล : <button type="button" class="btn" data-bs-toggle="modal"
+                                    data-bs-target="#zoomImg" onclick="updateImage()"><i class="fa-solid fa-image fa-xl"
+                                        style="color: rgb(13, 110, 253);"></i></button></legend>
+                            <div id="IsConfirmfieldIDNumber"></div>
+                            <div class="card" id="CardFieldIDNumber">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md">
+                                            <div class="mb-3">
+                                                <label class="form-label">เลขบัตรประชาชน : </label>
+                                                <input type="text" class="form-control" placeholder="เลขบัตรประชาชน"
+                                                    name="IDNumber" maxlength="13">
+                                                <div class="invalid-feedback">
+                                                    กรุณากรอก
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md">
+                                            <div class="mb-3">
+                                                <label class="form-label">รหัสนักศึกษา : </label>
+                                                <input type="text" class="form-control" placeholder="รหัสนักศึกษา"
+                                                    name="StudentID" maxlength="10">
+                                                <div class="invalid-feedback">
+                                                    กรุณากรอก
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md">
+                                            <div class="mb-3">
+                                                <label class="form-label">ชื่อ : </label>
+                                                <input type="text" class="form-control" placeholder="ชื่อ"
+                                                    name="NameTH">
+                                                <div class="invalid-feedback">
+                                                    กรุณากรอก
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md">
+                                            <div class="mb-3">
+                                                <label class="form-label">นามสกุล : </label>
+                                                <input type="text" class="form-control" placeholder="นามสกุล"
+                                                    name="SurNameTH">
+                                                <div class="invalid-feedback">
+                                                    กรุณากรอก
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-md">
+                                            <div class="d-grid gap-2">
+                                                <button id="btnSerachDataStudent" class="btn btn-primary" type="button"
+                                                    onclick="OnSerachDataStudent()">
+                                                    <span id="btnSerachDataStudentText"><i
+                                                            class="fa-solid fa-magnifying-glass"></i> ค้นหาข้อมูล</span>
+                                                    <span id="spinnerSerachDataStudent"
+                                                        class="spinner-border spinner-border-sm" role="status"
+                                                        aria-hidden="true" style="display: none;"></span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div id="listDataStudent"></div>
+                                    <div class="row">
+                                        <div class="col d-flex justify-content-end" id="btnChooseStudent"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+
+                        <fieldset id="fieldCourseID">
+                            <legend>ค้นหารหัสวิชา : <button type="button" class="btn" data-bs-toggle="modal"
+                                    data-bs-target="#zoomImg" onclick="updateImage()"><i class="fa-solid fa-image fa-xl"
+                                        style="color: rgb(13, 110, 253);"></i></button></legend>
+                            <div id="IsConfirmfieldCourseID"></div>
+                            <div class="card" id="CardFieldCourseID">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md">
+                                            <div class="mb-3">
+                                                <label class="form-label">รหัสวิชา : </label>
+                                                <input type="text" class="form-control" placeholder="รหัสวิชา"
+                                                    name="CourseID">
+                                                <div class="invalid-feedback">
+                                                    กรุณากรอก
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md">
+                                            <div class="mb-3">
+                                                <label class="form-label">ชื่อวิชา : </label>
+                                                <input type="text" class="form-control" placeholder="ชื่อวิชา"
+                                                    name="CourseNameTH">
+                                                <div class="invalid-feedback">
+                                                    กรุณากรอก
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-md">
+                                            <div class="d-grid gap-2">
+                                                <button id="btnSerachDataCourseID" class="btn btn-primary" type="button"
+                                                    onclick="OnSerachDataCourseID('all')">
+                                                    <span id="btnSerachDataCourseIDText"><i
+                                                            class="fa-solid fa-magnifying-glass"></i>
+                                                        ค้นหารหัสวิชา</span>
+                                                    <span id="spinnerSerachDataCourseID"
+                                                        class="spinner-border spinner-border-sm" role="status"
+                                                        aria-hidden="true" style="display: none;"></span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="listCourseID"></div>
+                                    <div class="row">
+                                        <div class="col d-flex justify-content-end" id="btnChooseCourse"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Create Q -->
+        <div class="modal fade" id="CreateQ" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+            aria-labelledby="CreateQLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="CreateQLabel"><i class="fa-solid fa-plus"></i>
+                            สร้างคิว</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="list-group">
+                            <!-- to do something -->
+                            <div class="form-check mb-3">
+                                <input class="form-check-input" type="checkbox" value="" id="CheckIsSelf">
+                                <label class="form-check-label" for="CheckIsSelf">
+                                    ตนเอง
+                                </label>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="searchFilter" class="form-label">ค้นหา : </label>
+                                <input type="text" class="form-control" id="searchFilter" placeholder="ค้นหา">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">ปิด</button>
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal"
+                            onclick="OnGetNoRowNotInQueue()"><i class="fa-solid fa-plus"></i> สร้างคิว</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal ZoomImg -->
+        <div class="modal fade" id="zoomImg" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+            aria-labelledby="zoomImgLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="btn btn-secondary" data-bs-target="#Option"
+                            data-bs-toggle="modal"><i class="fa-regular fa-circle-left"></i> กลับ</button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- <img id="myZoomImage" class="zoom" style="width: 100%;"> -->
+                        <div class="image-container">
+                            <img id="myZoomImage" alt="Zoom Image" class="zoom-image">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            function updateImage() {
+                var j = document.getElementById('showIndex').innerHTML;
+                var k = document.getElementById('tbImg_' + j).src;
+                document.getElementById('myZoomImage').src = k;
+                // document.getElementById('myZoomImage').setAttribute('data-magnify-src', k);
+            }
+        </script>
+
+        <script>
+            const username = '{{ UserProfile[0] }}';
+            const password = '{{ UserProfile[1] }}';
+            let CheckPass = ""
+
+            async function OnGetNoRowNotInQueue() {
+                var SF = document.getElementById('searchFilter').value;
+                var strSF = '';
+                if (SF == null || SF == '') {
+                    strSF = '*';
+                }
+                else {
+                    strSF = document.getElementById('searchFilter').value;
+                }
+
+                var isCheckedSelf = document.getElementById('CheckIsSelf').checked;
+
+                const url = 'https://localhost:7112/api/ExamCourse/OnGetNoRowNotInQueue?ExamType=' + document.getElementById('SetExamType').value + '&KeySearch=' + strSF + '&IsAllCampus=0&IsSelf=' + (isCheckedSelf ? '1' : '0');
+                //console.log('url => ' + url);
+
+                // Encode the username and password to Base64
+                const encodedCredentials = btoa(`${username}:${password}`);
+
+                try {
+                    let response = await fetch(url, {
+                        headers: {
+                            'Authorization': `Basic ${encodedCredentials}`
+                        }
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('ไม่พบข้อมูล');
+                    }
+
+                    let data = await response.json();
+
+                    const strQty = document.getElementById('strQty');
+
+                    let finalQty = 0;
+
+                    strQty.innerHTML = '';
+
+                    data.forEach(Qty => {
+                        strQty.innerHTML = Qty.NotInQueue;
+                        finalQty = Qty.NotInQueue;
+                    });
+
+                    if (finalQty > 0) {
+                        this.OnGenQueue();
+                    } else if (finalQty <= 0) {
+                        alert("ไม่มีปัญหา !!!");
+                    }
+                } catch (error) {
+                    console.error('มีข้อผิดพลาด:', error);
+                }
+            }
+
+            function uncheckCheckbox() {
+                // Get the checkbox element by its ID
+                var checkbox = document.getElementById('CheckIsSelf');
+
+                // Uncheck the checkbox
+                checkbox.checked = false;
+                document.getElementById('searchFilter').value = '';
+            }
+
+            async function OnGetQueueHistory() {
+                const url = 'https://localhost:7112/api/ExamCourse/OnGetQueueHistory?ExamType=' + document.getElementById('SetExamType').value;
+
+                const encodedCredentials = btoa(`${username}:${password}`);
+
+                try {
+                    let response = await fetch(url, {
+                        headers: {
+                            'Authorization': `Basic ${encodedCredentials}`
+                        }
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('ไม่พบข้อมูล');
+                    }
+
+                    let data = await response.json();
+                    // console.log('dataHistory' + data)
+
+                    const HistoryLi = document.getElementById('HistoryLi');
+                    HistoryLi.innerHTML = '';
+
+                    data.forEach(dataHistory => {
+                        HistoryLi.innerHTML += '<button type="button" class="list-group-item list-group-item-action" aria-current="true" onclick="OnGetQueueDetail(' + dataHistory.QueueNo + ')"><li class="list-group-item d-flex justify-content-between align-items-start"><div class="ms-2 me-auto"><div class="fw-bold">คิว ' + dataHistory.QueueNo + '</div>ทั้งหมด ' + dataHistory.Total + ' เสร็จสิ้น ' + dataHistory.Complete + ' ถ่ายใหม่ ' + dataHistory.RetakePhoto + '</div><span class="badge text-bg-danger rounded-pill">' + dataHistory.Failed + '</span></li></button>';
+                    });
+
+                } catch (error) {
+                    console.error('มีข้อผิดพลาด:', error);
+                }
+            }
+
+            async function OnGetQueueDetail(QueueNo) {
+                const url = 'https://localhost:7112/api/ExamCourse/OnGetQueueDetail?QueueNo=' + QueueNo;
+
+                const encodedCredentials = btoa(`${username}:${password}`);
+
+                try {
+                    let response = await fetch(url, {
+                        headers: {
+                            'Authorization': `Basic ${encodedCredentials}`
+                        }
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('ไม่พบข้อมูล');
+                    }
+
+                    let data = await response.json();
+
+                    const tbody = document.querySelector('#no-more-tables tbody');
+                    tbody.innerHTML = '';
+
+                    data.forEach((item, index) => {
+
+                        if (item.EditStatus == "Failed") {
+
+                            const row = document.createElement('tr');
+
+                            const cellID = document.createElement('td');
+                            cellID.textContent = item.ID;
+                            cellID.setAttribute('data-title', 'ลำดับ');
+                            cellID.style.textAlign = 'center';
+                            row.appendChild(cellID);
+
+                            const cellIDNumber = document.createElement('td');
+                            cellIDNumber.textContent = item.IDNumber;
+                            cellIDNumber.setAttribute('data-title', 'เลขประจำตัว');
+                            cellIDNumber.style.textAlign = 'center';
+                            // cellIDNumber.setAttribute('id', 'tbIDNumber_' + index);
+                            cellIDNumber.setAttribute('id', 'tbIDNumber_' + item.ID);
+                            cellIDNumber.setAttribute('name', 'tbIDNumber');
+                            row.appendChild(cellIDNumber);
+
+                            const cellIsChangeIDNumber = document.createElement('td');
+                            // cellIsChangeIDNumber.setAttribute('id', 'tbIsChangeIDNumber_' + index);
+                            cellIsChangeIDNumber.setAttribute('id', 'tbIsChangeIDNumber_' + item.ID);
+                            cellIsChangeIDNumber.setAttribute('name', 'tbIsChangeIDNumber');
+                            cellIsChangeIDNumber.style.display = 'none';
+                            row.appendChild(cellIsChangeIDNumber);
+
+                            const cellFullname = document.createElement('td');
+                            cellFullname.textContent = item.FullNameTH;
+                            cellFullname.setAttribute('data-title', 'ชื่อ-นามสกุล');
+                            // cellFullname.setAttribute('id', 'tbFullNameTH_' + index);
+                            cellFullname.setAttribute('id', 'tbFullNameTH_' + item.ID);
+                            row.appendChild(cellFullname);
+
+                            const cellCourseID = document.createElement('td');
+                            cellCourseID.textContent = item.CourseID;
+                            cellCourseID.setAttribute('data-title', 'รหัสวิชา');
+                            // cellCourseID.setAttribute('id', 'tbCourseID_' + index);
+                            cellCourseID.setAttribute('id', 'tbCourseID_' + item.ID);
+                            cellCourseID.style.textAlign = 'center';
+                            cellCourseID.setAttribute('name', 'tbCourseID');
+                            row.appendChild(cellCourseID);
+
+                            const cellIsChangeCourseID = document.createElement('td');
+                            // cellIsChangeCourseID.setAttribute('id', 'tbIsChangeCourseID_' + index);
+                            cellIsChangeCourseID.setAttribute('id', 'tbIsChangeCourseID_' + item.ID);
+                            cellIsChangeCourseID.setAttribute('name', 'tbIsChangeCourseID');
+                            cellIsChangeCourseID.style.display = 'none';
+                            row.appendChild(cellIsChangeCourseID);
+
+                            const cellCourseNameTH = document.createElement('td');
+                            cellCourseNameTH.textContent = item.CourseNameTH;
+                            cellCourseNameTH.setAttribute('data-title', 'ชื่อวิชา');
+                            // cellCourseNameTH.setAttribute('id', 'tbCourseNameTH_' + index);
+                            cellCourseNameTH.setAttribute('id', 'tbCourseNameTH_' + item.ID);
+                            row.appendChild(cellCourseNameTH);
+
+                            const cellExamresult = document.createElement('td');
+                            cellExamresult.innerHTML = '<i class="fa-solid fa-triangle-exclamation" style="color: #fccb1d;font-size:3rem;"></i>';
+                            cellExamresult.setAttribute('data-title', 'ผลการสอบ');
+                            cellExamresult.style.textAlign = 'center';
+                            cellExamresult.setAttribute('id', 'tbExamresult_' + item.ID);
+                            row.appendChild(cellExamresult);
+
+                            const cellRowNo = document.createElement('td');
+                            cellRowNo.textContent = item.RowNo;
+                            // cellRowNo.setAttribute('id', 'tbRowNo_' + index);
+                            cellRowNo.setAttribute('id', 'tbRowNo_' + item.ID);
+                            cellRowNo.setAttribute('name', 'tbRowNo');
+                            cellRowNo.style.display = 'none';
+                            row.appendChild(cellRowNo);
+
+                            const cellPaperOrder = document.createElement('td');
+                            cellPaperOrder.textContent = item.PaperOrder;
+                            // cellPaperOrder.setAttribute('id', 'tbPaperOrder_' + index);
+                            cellPaperOrder.setAttribute('id', 'tbPaperOrder_' + item.ID);
+                            cellPaperOrder.setAttribute('name', 'tbPaperOrder');
+                            cellPaperOrder.style.display = 'none';
+                            row.appendChild(cellPaperOrder);
+
+                            const cellCreateUserID = document.createElement('td');
+                            cellCreateUserID.textContent = item.CreateUserID;
+                            // cellCreateUserID.setAttribute('id', 'tbCreateUserID_' + index);
+                            cellCreateUserID.setAttribute('id', 'tbCreateUserID_' + item.ID);
+                            cellCreateUserID.setAttribute('name', 'tbCreateUserID');
+                            cellCreateUserID.style.display = 'none';
+                            row.appendChild(cellCreateUserID);
+
+                            const cellExam_format = document.createElement('td');
+                            cellExam_format.textContent = item.Exam_format;
+                            // cellExam_format.setAttribute('id', 'tbExamformat_' + index);
+                            cellExam_format.setAttribute('id', 'tbExamformat_' + item.ID);
+                            cellExam_format.setAttribute('name', 'tbExamformat');
+                            cellExam_format.style.display = 'none';
+                            row.appendChild(cellExam_format);
+
+                            const cellExam_set = document.createElement('td');
+                            cellExam_set.textContent = item.Exam_set;
+                            // cellExam_set.setAttribute('id', 'tbExamset_' + index);
+                            cellExam_set.setAttribute('id', 'tbExamset_' + item.ID);
+                            cellExam_set.setAttribute('name', 'tbExamset');
+                            cellExam_set.style.display = 'none';
+                            row.appendChild(cellExam_set);
+
+                            const cellExam_Type = document.createElement('td');
+                            cellExam_Type.textContent = item.Exam_Type;
+                            cellExam_Type.setAttribute('data-title', 'ประเภทการสอบ');
+                            cellExam_Type.style.textAlign = 'center';
+                            // cellExam_Type.setAttribute('id', 'tbExamType_' + index);
+                            cellExam_Type.setAttribute('id', 'tbExamType_' + item.ID);
+                            cellExam_Type.setAttribute('name', 'tbExamType');
+                            row.appendChild(cellExam_Type);
+
+                            const cellEditStatus = document.createElement('td');
+                            cellEditStatus.textContent = item.EditStatus;
+                            cellEditStatus.setAttribute('data-title', 'ผลการถ่ายกระดาษ');
+                            cellEditStatus.style.textAlign = 'center';
+                            // cellEditStatus.setAttribute('id', 'tbEditStatus_' + index);
+                            cellEditStatus.setAttribute('id', 'tbEditStatus_' + item.ID);
+                            cellEditStatus.setAttribute('name', 'tbEditStatus');
+                            row.appendChild(cellEditStatus);
+
+                            const cellPathImage = document.createElement('td');
+                            // cellPathImage.innerHTML = '<a href="https://rc.cnu.ac.th:8099/' + item.PathImage + '" target="_blank"><img name="tbImg" id="tbImg_' + index + '" width="100" height="100" src="https://rc.cnu.ac.th:8099/' + item.PathImage + '"></a>';
+                            if (item.Status != "RetakePhoto") {
+                                cellPathImage.innerHTML = '<a href="https://rc.cnu.ac.th:8099/' + item.PathImage + '" target="_blank"><img name="tbImg" id="tbImg_' + item.ID + '" width="100" height="100" src="https://rc.cnu.ac.th:8099/' + item.PathImage + '"></a>';
+
+                            } else {
+                                cellPathImage.innerHTML = '<a href=' + item.PathImage + ' target="_blank"><img name="tbImg" id="tbImg_' + item.ID + '" width="100" height="100" src="' + item.PathImage + '"></a>';
+                            }
+                            cellPathImage.setAttribute('data-title', 'รูปภาพ');
+                            cellPathImage.style.textAlign = 'center';
+                            row.appendChild(cellPathImage);
+
+                            const cellComment = document.createElement('td');
+                            cellComment.style.textAlign = 'center';
+                            cellComment.textContent = (item.Comment == null) ? '-' : item.Comment;
+                            // cellComment.setAttribute('id', 'tbComment_' + index);
+                            cellComment.setAttribute('id', 'tbComment_' + item.ID);
+                            cellComment.setAttribute('name', 'tbComment');
+                            // cellComment.style.display = 'none';
+                            row.appendChild(cellComment);
+
+                            const cellNote = document.createElement('td');
+                            cellNote.textContent = item.Note;
+                            cellNote.setAttribute('data-title', 'ปัญหา');
+                            // cellNote.setAttribute('id', 'tbNote_' + index);
+                            cellNote.setAttribute('id', 'tbNote_' + item.ID);
+                            row.appendChild(cellNote);
+
+                            const celloption = document.createElement('td');
+                            let strIDNumber;
+                            let strCourseID;
+                            if (item.IDNumber == null) {
+                                strIDNumber = item.IDNumber;
+                            } else {
+                                strIDNumber = '\'' + item.IDNumber + '\'';
+                            }
+                            if (item.CourseID == null) {
+                                strCourseID = item.CourseID;
+                            } else {
+                                strCourseID = '\'' + item.CourseID + '\'';
+                            }
+                            // celloption.innerHTML = '<button onclick="OnClickOption('+ index +','+ strIDNumber +',' + strCourseID +')" type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#Option"><i class="fa-solid fa-triangle-exclamation fa-lg"></i></button>';
+
+                            if (item.Status != "RetakePhoto") {
+                                celloption.innerHTML = '<button onclick="OnClickOption(' + item.ID + ',' + strIDNumber + ',' + strCourseID + ')" type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#Option"><i class="fa-solid fa-triangle-exclamation fa-lg"></i></button>';
+                                celloption.setAttribute('data-title', 'แก้ปัญหา');
+                                celloption.style.textAlign = 'center';
+                                // celloption.setAttribute('id', index);
+                                celloption.setAttribute('id', item.ID);
+                                row.appendChild(celloption);
+                            }
+
+                            tbody.appendChild(row);
+                        }
+                    });
+
+                } catch (error) {
+                    console.error('มีข้อผิดพลาด:', error);
+                }
+            }
+
+
+            function OnClickOption(index, IDNumber, CourseID) {
+                console.log('index => ' + index + ' IDNumber => ' + IDNumber + ' CourseID => ' + CourseID);
+
+                let courseID = document.getElementsByName('CourseID');
+                let courseNameTH = document.getElementsByName('CourseNameTH');
+                let idNumber = document.getElementsByName('IDNumber');
+                let studentID = document.getElementsByName('StudentID');
+                let nameTH = document.getElementsByName('NameTH');
+                let surnameTH = document.getElementsByName('SurNameTH');
+                let showIndex = document.getElementById('showIndex');
+                showIndex.innerHTML = index;
+                let IDNumberold = document.getElementById('IDNumberold');
+                IDNumberold.innerHTML = IDNumber;
+                let CourseIDold = document.getElementById('CourseIDold');
+                CourseIDold.innerHTML = CourseID;
+
+                // console.log("ClickOpt_CheckPass => " + CheckPass);
+
+                if (CheckPass == "1") {
+                    document.getElementById('OptionModalbody').innerHTML = '<center><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></center>';
+                    document.getElementById('OptionModalbody').innerHTML = '<center><i class="fa-solid fa-circle-check" style="color: #198754; font-size: 3rem;"></i><span style="font-size: 2rem;"> สำเร็จ</span></center>';
+                    document.getElementById('tbEditStatus_' + index).textContent = 'Complete';
+                    document.getElementById('tbNote_' + index).textContent = '-';
+                    CheckPass = '';
+                    console.log("ClickOpt_CheckPass1 => " + CheckPass);
+
+                } else if (CheckPass == "2") {
+                    document.getElementById('OptionModalbody').innerHTML = '<center><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></center>';
+                    document.getElementById('OptionModalbody').innerHTML = '<center><i class="fa-solid fa-circle-xmark" style="color: #e31616; font-size: 3rem;"></i><span style="font-size: 2rem;"> ล้มเหลว</span></center>';
+                    document.getElementById('tbEditStatus_' + index).textContent = 'Fail';
+                    document.getElementById('tbNote_' + index).textContent = '-';
+                    CheckPass = '';
+                    console.log("ClickOpt_CheckPass1 => " + CheckPass);
+
+                }
+                else if (CheckPass == "0") {
+                    courseID.forEach((element, idx) => {
+                        element.setAttribute('id', 'CourseID_' + index);
+                        element.value = "";
+                        if (CourseID != null && CourseID != "") {
+                            element.value = CourseID;
+                            document.getElementById('fieldCourseID').style.display = 'none';
+                            document.getElementById('tbIsChangeCourseID_' + index).innerHTML = 'hidden';
+                        }
+                        else {
+                            document.getElementById('fieldCourseID').style.display = 'block';
+                        }
+                    });
+                    courseNameTH.forEach((element, idx) => {
+                        element.setAttribute('id', 'CourseNameTH_' + index);
+                        element.value = "";
+                    });
+                    idNumber.forEach((element, idx) => {
+                        element.setAttribute('id', 'IDNumber_' + index);
+                        element.value = "";
+                        if (IDNumber != null && IDNumber != "") {
+                            element.value = IDNumber;
+                            document.getElementById('fieldIDNumber').style.display = 'none';
+                            document.getElementById('tbIsChangeIDNumber_' + index).innerHTML = 'hidden';
+                        } else {
+                            document.getElementById('fieldIDNumber').style.display = 'block';
+                        }
+                    });
+                    studentID.forEach((element, idx) => {
+                        element.setAttribute('id', 'StudentID_' + index);
+                        element.value = "";
+                    });
+                    nameTH.forEach((element, idx) => {
+                        element.setAttribute('id', 'NameTH_' + index);
+                        element.value = "";
+                    });
+                    surnameTH.forEach((element, idx) => {
+                        element.setAttribute('id', 'SurNameTH_' + index);
+                        element.value = "";
+                    });
+
+                    const lmDataStudent = document.getElementById('listDataStudent');
+                    lmDataStudent.innerHTML = "";
+                    const lmDataCourseID = document.getElementById('listCourseID');
+                    lmDataCourseID.innerHTML = "";
+                    const btnChooseStudent = document.getElementById('btnChooseStudent');
+                    btnChooseStudent.innerHTML = "";
+                    const btnChooseCourse = document.getElementById('btnChooseCourse');
+                    btnChooseCourse.innerHTML = "";
+
+                    var mIDNumber = document.getElementById('IDNumber_' + index);
+                    mIDNumber.classList.remove("is-invalid");
+                    var StudentID = document.getElementById('StudentID_' + index);
+                    StudentID.classList.remove("is-invalid");
+                    var NameTH = document.getElementById('NameTH_' + index);
+                    NameTH.classList.remove("is-invalid");
+                    var SurNameTH = document.getElementById('SurNameTH_' + index);
+                    SurNameTH.classList.remove("is-invalid");
+                    var mCourseID = document.getElementById('CourseID_' + index);
+                    mCourseID.classList.remove("is-invalid");
+                    var CourseNameTH = document.getElementById('CourseNameTH_' + index);
+                    CourseNameTH.classList.remove("is-invalid");
+
+                    document.getElementById('OptionModalbody').style.display = 'none';
+                    CheckPass = '';
+                }
+                else {
+                    document.getElementById('fieldCourseID').style.display = 'none';
+                    document.getElementById('fieldIDNumber').style.display = 'none';
+                    document.getElementById('OptionModalbody').style.display = 'block';
+                    if (CheckPass == "") {
+                        EditFormAnswer("1", index);
+                        document.getElementById('OptionModalbody').innerHTML = '<center><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></center>';
+                        console.log("ClickOpt_CheckPass3 => " + CheckPass);
+
+                    }
+                }
+            }
+
+
+
+            async function OnSerachDataStudent() {
+
+                openbtnloading('btnSerachDataStudent', 'spinnerSerachDataStudent', 'btnSerachDataStudentText');
+
+                var index = document.getElementById("showIndex").innerHTML;
+                var IDNumber = document.getElementById('IDNumber_' + index);
+                var StudentID = document.getElementById('StudentID_' + index);
+                var NameTH = document.getElementById('NameTH_' + index);
+                var SurNameTH = document.getElementById('SurNameTH_' + index);
+
+                if (IDNumber.value == null || IDNumber.value == "") {
+                    IDNumber.value = '-';
+                }
+
+                if (StudentID.value == null || StudentID.value == "") {
+                    StudentID.value = '-';
+                }
+
+                if (NameTH.value == null || NameTH.value == "") {
+                    NameTH.value = "-";
+                }
+
+                if (SurNameTH.value == null || SurNameTH.value == "") {
+                    SurNameTH.value = '-'
+                }
+
+                if (IDNumber.value == "-" && StudentID.value == "-" && NameTH.value == "-" && SurNameTH.value == "-") {
+                    IDNumber.classList.add("is-invalid");
+                    StudentID.classList.add("is-invalid");
+                    NameTH.classList.add("is-invalid");
+                    SurNameTH.classList.add("is-invalid");
+                    closebtnloading('btnSerachDataStudent', 'spinnerSerachDataStudent', 'btnSerachDataStudentText', '<i class="fa-solid fa-magnifying-glass"></i> ค้นหาข้อมูล');
+                }
+                else {
+                    IDNumber.classList.remove("is-invalid");
+                    StudentID.classList.remove("is-invalid");
+                    NameTH.classList.remove("is-invalid");
+                    SurNameTH.classList.remove("is-invalid");
+
+                    const url = 'https://localhost:7112/api/ExamCourse/OnSearchDataStudent?IDNumber=' + IDNumber.value + '&StudentID=' + StudentID.value + '&NameTH=' + NameTH.value + '&SurNameTH=' + SurNameTH.value;
+
+                    const encodedCredentials = btoa(`${username}:${password}`);
+
+                    try {
+                        let response = await fetch(url, {
+                            headers: {
+                                'Authorization': `Basic ${encodedCredentials}`
+                            }
+                        });
+
+                        if (!response.ok) {
+                            throw new Error('ไม่พบข้อมูล');
+                            closebtnloading('btnSerachDataStudent', 'spinnerSerachDataStudent', 'btnSerachDataStudentText', '<i class="fa-solid fa-magnifying-glass"></i> ค้นหาข้อมูล');
+                        }
+
+                        let data = await response.json();
+
+                        const lmDataStudent = document.getElementById('listDataStudent');
+                        lmDataStudent.innerHTML = "";
+
+                        if (data.length === 0) {
+                            lmDataStudent.innerHTML = '<span style="color: red;">ไม่พบข้อมูล</span>';
+                        }
+                        else {
+                            if (document.getElementById('tbExamformat_' + index).innerHTML == "1") {
+                                data.forEach((dataStd, idx) => {
+                                    var IDNumber = (dataStd.IDNumber).replace(/ |_/g, '');
+                                    var NameTH = (dataStd.NameTH).replace(/ |_/g, '');
+                                    var SurNameTH = (dataStd.SurNameTH).replace(/ |_/g, '');
+
+                                    lmDataStudent.innerHTML += '<div class="form-check"><input class="form-check-input" type="radio" name="radioStudent" id="student_' + idx + '" value="' + IDNumber + ' ' + NameTH + ' ' + SurNameTH + '"><label class="form-check-label" for="student_' + idx + '">' + dataStd.IDNumber + ' ' + dataStd.PrefixNameID + dataStd.NameTH + ' ' + dataStd.SurNameTH + '</label></div>'
+                                });
+                            }
+                            else {
+                                data.forEach((dataStd, idx) => {
+                                    var StudentID = (dataStd.StudentID).replace(/ |_/g, '');
+                                    var NameTH = (dataStd.NameTH).replace(/ |_/g, '');
+                                    var SurNameTH = (dataStd.SurNameTH).replace(/ |_/g, '');
+                                    lmDataStudent.innerHTML += '<div class="form-check"><input class="form-check-input" type="radio" name="radioStudent" id="student_' + idx + '" value="' + StudentID + ' ' + NameTH + ' ' + SurNameTH + '"><label class="form-check-label" for="student_' + idx + '">' + dataStd.StudentID + ' ' + dataStd.PrefixNameID + dataStd.NameTH + ' ' + dataStd.SurNameTH + '</label></div>'
+                                });
+                            }
+
+                            document.getElementById('btnChooseStudent').innerHTML = '<button type="button" class="btn btn-success mb-3" onclick="showSelectedValue()">ยืนยัน</button>';
+                        }
+
+                        closebtnloading('btnSerachDataStudent', 'spinnerSerachDataStudent', 'btnSerachDataStudentText', '<i class="fa-solid fa-magnifying-glass"></i> ค้นหาข้อมูล');
+
+                    } catch (error) {
+                        document.getElementById('listDataStudent').innerHTML = '<span style="color: red;">ไม่พบข้อมูล</span>';
+                        console.error('มีข้อผิดพลาด:', error);
+                        closebtnloading('btnSerachDataStudent', 'spinnerSerachDataStudent', 'btnSerachDataStudentText', '<i class="fa-solid fa-magnifying-glass"></i> ค้นหาข้อมูล');
+                    }
+                }
+            }
+
+            function showSelectedValue() {
+                var getIndex = document.getElementById("showIndex").innerHTML;
+
+                let radios = document.getElementsByName('radioStudent');
+                let selectedValue;
+                for (let i = 0; i < radios.length; i++) {
+                    if (radios[i].checked) {
+                        selectedValue = radios[i].value;
+                        break;
+                    }
+                }
+
+                if (selectedValue) {
+                    var selectedValueSplit = selectedValue.split(" ");
+
+                    if (document.getElementById('IDNumberold').innerHTML == selectedValueSplit[0]) {
+                        document.getElementById("tbIsChangeIDNumber_" + getIndex).innerHTML = "hidden";
+                    } else {
+                        document.getElementById("tbIsChangeIDNumber_" + getIndex).innerHTML = "change";
+                    }
+
+                    document.getElementById("tbIDNumber_" + getIndex).innerText = selectedValueSplit[0]
+                    document.getElementById("tbFullNameTH_" + getIndex).innerText = selectedValueSplit[1] + ' ' + selectedValueSplit[2];
+
+                    console.log(document.getElementById('CourseID_' + getIndex).value);
+                    if (document.getElementById('CourseID_' + getIndex).value == null || document.getElementById('CourseID_' + getIndex).value == "") {
+                        document.getElementById('CourseID_' + getIndex).value = null;
+                    }
+                    else {
+                        this.OnSerachDataCourseID('singlerow');
+                    }
+
+                    document.getElementById('CardFieldIDNumber').style.display = 'none';
+                    document.getElementById('IsConfirmfieldIDNumber').style.display = 'block';
+                    document.getElementById('IsConfirmfieldIDNumber').innerHTML = '<div class="alert alert-success" role="alert"><i class="fa-solid fa-circle-check fa-xl"></i> ยืนยันแล้ว !!! <a onclick="editSerachData()" class="alert-link" style="margin-left: 2%; cursor: pointer;">แก้ไข</a></div>';
+                } else {
+                    alert("กรุณาเลือก !!!");
+                    closebtnloading('btnSerachDataStudent', 'spinnerSerachDataStudent', 'btnSerachDataStudentText', '<i class="fa-solid fa-magnifying-glass"></i> ค้นหาข้อมูล');
+                }
+            }
+
+            function editSerachData() {
+                document.getElementById('CardFieldIDNumber').style.display = 'flex';
+                document.getElementById('IsConfirmfieldIDNumber').style.display = 'none';
+            }
+
+            async function OnSerachDataCourseID(modesearchcourse) {
+
+                openbtnloading('btnSerachDataCourseID', 'spinnerSerachDataCourseID', 'btnSerachDataCourseIDText');
+
+                var index = document.getElementById("showIndex").innerHTML;
+                var getIDNumber = document.getElementById("tbIDNumber_" + index).innerText;
+                var CourseID = document.getElementById('CourseID_' + index);
+                var CourseNameTH = document.getElementById('CourseNameTH_' + index);
+
+                if (CourseID.value == null || CourseID.value == "") {
+                    CourseID.value = '-';
+                }
+
+                if (CourseNameTH.value == null || CourseNameTH.value == "") {
+                    CourseNameTH.value = "-";
+                }
+
+                if (CourseID.value == '-' && CourseNameTH.value == "-") {
+                    CourseID.classList.add("is-invalid");
+                    CourseNameTH.classList.add("is-invalid");
+                    closebtnloading('btnSerachDataCourseID', 'spinnerSerachDataCourseID', 'btnSerachDataCourseIDText', '<i class="fa-solid fa-magnifying-glass"></i> ค้นหารหัสวิชา');
+                }
+                else {
+                    CourseID.classList.remove("is-invalid");
+                    CourseNameTH.classList.remove("is-invalid");
+
+                    const lmCourseID = document.getElementById('listCourseID');
+
+                    if (getIDNumber == null || getIDNumber == "") {
+                        // alert("ไม่พบเลขบัตรประชาชน **กรุณาค้นหาข้อมูล !!!");
+                        lmCourseID.innerHTML = "";
+                        lmCourseID.innerHTML += '<span style="color: red;">ไม่พบเลขบัตรประชาชน **กรุณาค้นหาข้อมูล !!!</span>';
+                        closebtnloading('btnSerachDataCourseID', 'spinnerSerachDataCourseID', 'btnSerachDataCourseIDText', '<i class="fa-solid fa-magnifying-glass"></i> ค้นหารหัสวิชา');
+                    } else {
+                        const url = 'https://localhost:7112/api/ExamCourse/GetWhereEnrollCourseStudent?UserID=' + getIDNumber + '&courseID=' + CourseID.value + '&courseNameTH=' + CourseNameTH.value;
+
+                        const encodedCredentials = btoa(`${username}:${password}`);
+
+                        try {
+                            let response = await fetch(url, {
+                                headers: {
+                                    'Authorization': `Basic ${encodedCredentials}`
+                                }
+                            });
+
+                            if (!response.ok) {
+                                document.getElementById("tbCourseID_" + index).innerText = null;
+                                throw new Error('ไม่พบข้อมูล');
+                                closebtnloading('btnSerachDataCourseID', 'spinnerSerachDataCourseID', 'btnSerachDataCourseIDText', '<i class="fa-solid fa-magnifying-glass"></i> ค้นหารหัสวิชา');
+                            }
+
+                            let data = await response.json();
+
+                            lmCourseID.innerHTML = "";
+
+                            if (modesearchcourse == "singlerow") {
+                                if (data.length == 0) {
+                                    document.getElementById("tbCourseID_" + index).innerText = null;
+                                    console.log('mode singlerow if');
+                                } else {
+                                    data.forEach((datasiggle) => {
+                                        var selectedValueSplit = datasiggle.CourseDetail.split(":");
+                                        document.getElementById("tbCourseID_" + index).innerText = selectedValueSplit[0];
+                                        document.getElementById("tbCourseNameTH_" + index).innerText = selectedValueSplit[1];
+                                        console.log(datasiggle.CourseDetail);
+                                    });
+                                }
+                            }
+                            else {
+                                if (data.length == 0) {
+                                    lmCourseID.innerHTML += '<span style="color: red;">ไม่พบข้อมูล</span>';
+                                } else {
+
+                                    data.forEach((dataC, idx) => {
+                                        let courseDetail = dataC.CourseDetail;
+                                        let gradeIcon = dataC.IsGrade == '1' ? ' <i class="fa-solid fa-trophy" style="color: #ffc107;"></i>' : '';
+                                        let labelStyle = '';
+
+                                        if (dataC.TypeName == 'นอกโครงสร้าง' && dataC.IsGrade == '0') {
+                                            labelStyle = ' style="color: #bb2d3b;"';
+                                        } else if (dataC.TypeName == 'แผนการเรียน') {
+                                            labelStyle = ' style="color: #0b5ed7;"';
+                                        } else if (dataC.TypeName == 'ลงทะเบียน') {
+                                            labelStyle = ' style="color: #157347;"';
+                                        }
+
+                                        lmCourseID.innerHTML += `
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="radioCourse" id="Course_${idx}" value="${courseDetail}">
+                                                <label class="form-check-label"${labelStyle} for="Course_${idx}">
+                                                    ${courseDetail}${gradeIcon}
+                                                </label>
+                                            </div>
+                                        `;
+                                    });
+
+                                    document.getElementById('btnChooseCourse').innerHTML = '<button type="button" class="btn btn-success mb-3" onclick="showSelectedCourseValue()">ยืนยัน</button>';
+                                }
+                            }
+
+                            closebtnloading('btnSerachDataCourseID', 'spinnerSerachDataCourseID', 'btnSerachDataCourseIDText', '<i class="fa-solid fa-magnifying-glass"></i> ค้นหารหัสวิชา');
+
+                        } catch (error) {
+                            document.getElementById('listCourseID').innerHTML = '<span style="color: red;">ไม่พบข้อมูล</span>';
+                            console.error('มีข้อผิดพลาด:', error);
+                            closebtnloading('btnSerachDataCourseID', 'spinnerSerachDataCourseID', 'btnSerachDataCourseIDText', '<i class="fa-solid fa-magnifying-glass"></i> ค้นหารหัสวิชา');
+                        }
+                    }
+                }
+            }
+
+
+            function showSelectedCourseValue() {
+                var getIndex = document.getElementById("showIndex").innerHTML;
+
+                let radios = document.getElementsByName('radioCourse');
+                let selectedValue;
+                for (let i = 0; i < radios.length; i++) {
+                    if (radios[i].checked) {
+                        selectedValue = radios[i].value;
+                        break;
+                    }
+                }
+
+                if (selectedValue) {
+                    var selectedValueSplit = selectedValue.split(":");
+
+                    if (document.getElementById('CourseIDold').innerHTML == selectedValueSplit[0]) {
+                        document.getElementById("tbIsChangeCourseID_" + getIndex).innerHTML = "hidden";
+                    } else {
+                        document.getElementById("tbIsChangeCourseID_" + getIndex).innerHTML = "change";
+                    }
+
+                    document.getElementById("tbCourseID_" + getIndex).innerText = selectedValueSplit[0];
+                    document.getElementById("tbCourseNameTH_" + getIndex).innerText = selectedValueSplit[1];
+
+                    document.getElementById('CardFieldCourseID').style.display = 'none';
+                    document.getElementById('IsConfirmfieldCourseID').style.display = 'block';
+                    document.getElementById('IsConfirmfieldCourseID').innerHTML = '<div class="alert alert-success" role="alert"><i class="fa-solid fa-circle-check fa-xl"></i> ยืนยันแล้ว !!! <a onclick="editSerachCourse()" class="alert-link" style="margin-left: 2%; cursor: pointer;">แก้ไข</a></div>';
+                } else {
+                    alert("กรุณาเลือก !!!");
+                    closebtnloading('btnSerachDataCourseID', 'spinnerSerachDataCourseID', 'btnSerachDataCourseIDText', '<i class="fa-solid fa-magnifying-glass"></i> ค้นหารหัสวิชา');
+                }
+            }
+
+            function editSerachCourse() {
+                document.getElementById('CardFieldCourseID').style.display = 'flex';
+                document.getElementById('IsConfirmfieldCourseID').style.display = 'none';
+            }
+
+            async function OnGenQueue() {
+                var SF = document.getElementById('searchFilter').value;
+                var strSF = '';
+                if (SF == null || SF == '') {
+                    strSF = '*';
+                }
+                else {
+                    strSF = document.getElementById('searchFilter').value;
+                }
+
+                var isCheckedSelf = document.getElementById('CheckIsSelf').checked;
+
+                const url = 'https://localhost:7112/api/ExamCourse/OnGenQueue?ExamType=' + document.getElementById('SetExamType').value + '&IsAllCampus=0&KeySearch=' + strSF + '&IsSelf=' + (isCheckedSelf ? '1' : '0');
+
+                const encodedCredentials = btoa(`${username}:${password}`);
+
+                try {
+                    let response = await fetch(url, {
+                        headers: {
+                            'Authorization': `Basic ${encodedCredentials}`
+                        }
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('ไม่พบข้อมูล');
+                    }
+
+                    let data = await response.json();
+                    let count = data.length;
+
+                    document.getElementById('strQty').innerHTML = (parseInt(strQty.innerHTML) - count);
+
+                    const tbody = document.querySelector('#no-more-tables tbody');
+                    tbody.innerHTML = '';
+
+                    data.forEach((item, index) => {
+
+                        if (item.EditStatus == "Failed") {
+
+                            const row = document.createElement('tr');
+
+                            const cellID = document.createElement('td');
+                            cellID.textContent = item.ID;
+                            cellID.setAttribute('data-title', 'ลำดับ');
+                            cellID.style.textAlign = 'center';
+                            row.appendChild(cellID);
+
+                            const cellIDNumber = document.createElement('td');
+                            cellIDNumber.textContent = item.IDNumber;
+                            cellIDNumber.setAttribute('data-title', 'เลขประจำตัว');
+                            cellIDNumber.style.textAlign = 'center';
+                            // cellIDNumber.setAttribute('id', 'tbIDNumber_' + index);
+                            cellIDNumber.setAttribute('id', 'tbIDNumber_' + item.ID);
+                            cellIDNumber.setAttribute('name', 'tbIDNumber');
+                            row.appendChild(cellIDNumber);
+
+                            const cellIsChangeIDNumber = document.createElement('td');
+                            // cellIsChangeIDNumber.setAttribute('id', 'tbIsChangeIDNumber_' + index);
+                            cellIsChangeIDNumber.setAttribute('id', 'tbIsChangeIDNumber_' + item.ID);
+                            cellIsChangeIDNumber.setAttribute('name', 'tbIsChangeIDNumber');
+                            cellIsChangeIDNumber.style.display = 'none';
+                            row.appendChild(cellIsChangeIDNumber);
+
+                            const cellFullname = document.createElement('td');
+                            cellFullname.textContent = item.FullNameTH;
+                            cellFullname.setAttribute('data-title', 'ชื่อ-นามสกุล');
+                            // cellFullname.setAttribute('id', 'tbFullNameTH_' + index);
+                            cellFullname.setAttribute('id', 'tbFullNameTH_' + item.ID);
+                            row.appendChild(cellFullname);
+
+                            const cellCourseID = document.createElement('td');
+                            cellCourseID.textContent = item.CourseID;
+                            cellCourseID.setAttribute('data-title', 'รหัสวิชา');
+                            // cellCourseID.setAttribute('id', 'tbCourseID_' + index);
+                            cellCourseID.setAttribute('id', 'tbCourseID_' + item.ID);
+                            cellCourseID.style.textAlign = 'center';
+                            cellCourseID.setAttribute('name', 'tbCourseID');
+                            row.appendChild(cellCourseID);
+
+                            const cellIsChangeCourseID = document.createElement('td');
+                            // cellIsChangeCourseID.setAttribute('id', 'tbIsChangeCourseID_' + index);
+                            cellIsChangeCourseID.setAttribute('id', 'tbIsChangeCourseID_' + item.ID);
+                            cellIsChangeCourseID.setAttribute('name', 'tbIsChangeCourseID');
+                            cellIsChangeCourseID.style.display = 'none';
+                            row.appendChild(cellIsChangeCourseID);
+
+                            const cellCourseNameTH = document.createElement('td');
+                            cellCourseNameTH.textContent = item.CourseNameTH;
+                            cellCourseNameTH.setAttribute('data-title', 'ชื่อวิชา');
+                            // cellCourseNameTH.setAttribute('id', 'tbCourseNameTH_' + index);
+                            cellCourseNameTH.setAttribute('id', 'tbCourseNameTH_' + item.ID);
+                            row.appendChild(cellCourseNameTH);
+
+                            const cellExamresult = document.createElement('td');
+                            cellExamresult.innerHTML = '<i class="fa-solid fa-triangle-exclamation" style="color: #fccb1d;font-size:3rem;"></i>';
+                            cellExamresult.setAttribute('data-title', 'ผลการสอบ');
+                            cellExamresult.style.textAlign = 'center';
+                            cellExamresult.setAttribute('id', 'tbExamresult_' + item.ID);
+                            row.appendChild(cellExamresult);
+
+                            const cellRowNo = document.createElement('td');
+                            cellRowNo.textContent = item.RowNo;
+                            // cellRowNo.setAttribute('id', 'tbRowNo_' + index);
+                            cellRowNo.setAttribute('id', 'tbRowNo_' + item.ID);
+                            cellRowNo.setAttribute('name', 'tbRowNo');
+                            cellRowNo.style.display = 'none';
+                            row.appendChild(cellRowNo);
+
+                            const cellPaperOrder = document.createElement('td');
+                            cellPaperOrder.textContent = item.PaperOrder;
+                            // cellPaperOrder.setAttribute('id', 'tbPaperOrder_' + index);
+                            cellPaperOrder.setAttribute('id', 'tbPaperOrder_' + item.ID);
+                            cellPaperOrder.setAttribute('name', 'tbPaperOrder');
+                            cellPaperOrder.style.display = 'none';
+                            row.appendChild(cellPaperOrder);
+
+                            const cellCreateUserID = document.createElement('td');
+                            cellCreateUserID.textContent = item.CreateUserID;
+                            // cellCreateUserID.setAttribute('id', 'tbCreateUserID_' + index);
+                            cellCreateUserID.setAttribute('id', 'tbCreateUserID_' + item.ID);
+                            cellCreateUserID.setAttribute('name', 'tbCreateUserID');
+                            cellCreateUserID.style.display = 'none';
+                            row.appendChild(cellCreateUserID);
+
+                            const cellExam_format = document.createElement('td');
+                            cellExam_format.textContent = item.Exam_format;
+                            // cellExam_format.setAttribute('id', 'tbExamformat_' + index);
+                            cellExam_format.setAttribute('id', 'tbExamformat_' + item.ID);
+                            cellExam_format.setAttribute('name', 'tbExamformat');
+                            cellExam_format.style.display = 'none';
+                            row.appendChild(cellExam_format);
+
+                            const cellExam_set = document.createElement('td');
+                            cellExam_set.textContent = item.Exam_set;
+                            // cellExam_set.setAttribute('id', 'tbExamset_' + index);
+                            cellExam_set.setAttribute('id', 'tbExamset_' + item.ID);
+                            cellExam_set.setAttribute('name', 'tbExamset');
+                            cellExam_set.style.display = 'none';
+                            row.appendChild(cellExam_set);
+
+                            const cellExam_Type = document.createElement('td');
+                            cellExam_Type.textContent = item.Exam_Type;
+                            cellExam_Type.setAttribute('data-title', 'ประเภทการสอบ');
+                            cellExam_Type.style.textAlign = 'center';
+                            // cellExam_Type.setAttribute('id', 'tbExamType_' + index);
+                            cellExam_Type.setAttribute('id', 'tbExamType_' + item.ID);
+                            cellExam_Type.setAttribute('name', 'tbExamType');
+                            row.appendChild(cellExam_Type);
+
+                            const cellEditStatus = document.createElement('td');
+                            cellEditStatus.textContent = item.EditStatus;
+                            cellEditStatus.setAttribute('data-title', 'ผลการถ่ายกระดาษ');
+                            cellEditStatus.style.textAlign = 'center';
+                            // cellEditStatus.setAttribute('id', 'tbEditStatus_' + index);
+                            cellEditStatus.setAttribute('id', 'tbEditStatus_' + item.ID);
+                            cellEditStatus.setAttribute('name', 'tbEditStatus');
+                            row.appendChild(cellEditStatus);
+
+                            const cellPathImage = document.createElement('td');
+                            // cellPathImage.innerHTML = '<a href="https://rc.cnu.ac.th:8099/' + item.PathImage + '" target="_blank"><img name="tbImg" id="tbImg_' + index + '" width="100" height="100" src="https://rc.cnu.ac.th:8099/' + item.PathImage + '"></a>';
+                            if (item.Status != "RetakePhoto") {
+                                cellPathImage.innerHTML = '<a href="https://rc.cnu.ac.th:8099/' + item.PathImage + '" target="_blank"><img name="tbImg" id="tbImg_' + item.ID + '" width="100" height="100" src="https://rc.cnu.ac.th:8099/' + item.PathImage + '"></a>';
+
+                            } else {
+                                cellPathImage.innerHTML = '<a href=' + item.PathImage + ' target="_blank"><img name="tbImg" id="tbImg_' + item.ID + '" width="100" height="100" src="' + item.PathImage + '"></a>';
+                            }
+                            cellPathImage.innerHTML = '<a href="https://rc.cnu.ac.th:8099/' + item.PathImage + '" target="_blank"><img name="tbImg" id="tbImg_' + item.ID + '" width="100" height="100" src="https://rc.cnu.ac.th:8099/' + item.PathImage + '"></a>';
+                            cellPathImage.setAttribute('data-title', 'รูปภาพ');
+                            cellPathImage.style.textAlign = 'center';
+                            row.appendChild(cellPathImage);
+
+                            const cellComment = document.createElement('td');
+                            cellComment.style.textAlign = 'center';
+                            cellComment.textContent = (item.Comment == null) ? '-' : item.Comment;
+                            // cellComment.setAttribute('id', 'tbComment_' + index);
+                            cellComment.setAttribute('id', 'tbComment_' + item.ID);
+                            cellComment.setAttribute('name', 'tbComment');
+                            // cellComment.style.display = 'none';
+                            row.appendChild(cellComment);
+
+                            const cellNote = document.createElement('td');
+                            cellNote.textContent = item.Note;
+                            cellNote.setAttribute('data-title', 'ปัญหา');
+                            // cellNote.setAttribute('id', 'tbNote_' + index);
+                            cellNote.setAttribute('id', 'tbNote_' + item.ID);
+                            row.appendChild(cellNote);
+
+                            const celloption = document.createElement('td');
+                            let strIDNumber;
+                            let strCourseID;
+                            if (item.IDNumber == null) {
+                                strIDNumber = item.IDNumber;
+                            } else {
+                                strIDNumber = '\'' + item.IDNumber + '\'';
+                            }
+                            if (item.CourseID == null) {
+                                strCourseID = item.CourseID;
+                            } else {
+                                strCourseID = '\'' + item.CourseID + '\'';
+                            }
+                            // celloption.innerHTML = '<button onclick="OnClickOption('+ index +','+ strIDNumber +',' + strCourseID +')" type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#Option"><i class="fa-solid fa-triangle-exclamation fa-lg"></i></button>';
+
+                            if (item.Status != "RetakePhoto") {
+
+                                celloption.innerHTML = '<button onclick="OnClickOption(' + item.ID + ',' + strIDNumber + ',' + strCourseID + ')" type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#Option"><i class="fa-solid fa-triangle-exclamation fa-lg"></i></button>';
+                                celloption.setAttribute('data-title', 'แก้ปัญหา');
+                                celloption.style.textAlign = 'center';
+                                // celloption.setAttribute('id', index);
+                                celloption.setAttribute('id', item.ID);
+                                row.appendChild(celloption);
+                            }
+
+                            tbody.appendChild(row);
+                        }
+                    });
+                    // console.log(data);
+
+
+                } catch (error) {
+                    console.error('มีข้อผิดพลาด:', error);
+                }
+            }
+        </script>
+
+
+        <script>
+            function openbtnloading(idloadingButton, idspinner, idbuttonText) {
+                var loadingButton = document.getElementById(idloadingButton);
+                var spinner = document.getElementById(idspinner);
+                var buttonText = document.getElementById(idbuttonText);
+
+                loadingButton.disabled = true;
+                spinner.style.display = 'inline-block';
+                buttonText.textContent = 'Loading...';
+            }
+
+            function closebtnloading(idloadingButton, idspinner, idbuttonText, iconandtext) {
+                var loadingButton = document.getElementById(idloadingButton);
+                var spinner = document.getElementById(idspinner);
+                var buttonText = document.getElementById(idbuttonText);
+
+                loadingButton.disabled = false;
+                spinner.style.display = 'none';
+                buttonText.innerHTML = iconandtext;
+            }
+        </script>
+
+        <script>
+            function EditFormAnswer(mode, idx) {
+
+
+
+                let idNumber = document.getElementsByName('tbIDNumber');
+                let courseID = document.getElementsByName('tbCourseID');
+                let Img = document.getElementsByName('tbImg');
+                let ExamType = document.getElementsByName('tbExamType');
+                let Examset = document.getElementsByName('tbExamset');
+                let Examformat = document.getElementsByName('tbExamformat');
+                let RowNo = document.getElementsByName('tbRowNo');
+                let IsChangeIDNumber = document.getElementsByName('tbIsChangeIDNumber');
+                let IsChangeCourseID = document.getElementsByName('tbIsChangeCourseID');
+                let paperOrder = document.getElementsByName('tbPaperOrder');
+                let createUserID = document.getElementsByName('tbCreateUserID');
+                let Comment = document.getElementsByName('tbComment');
+                let EditStatus = document.getElementsByName('tbEditStatus');
+
+                var pairedValues = [];
+
+                switch (mode) {
+                    case "1":
+                        var idA1 = document.getElementById('tbIDNumber_' + idx).innerHTML;
+                        // var idB1 = courseID[idx].innerHTML;
+                        var idB1 = document.getElementById('tbCourseID_' + idx).innerHTML;
+                        // var idC1 = Img[idx].src;
+                        var idC1 = document.getElementById('tbImg_' + idx).src;
+                        var idD1 = 'hidden';
+                        var idE1 = 'hidden';
+                        // var idF1 = Img[idx].id;
+                        var idF1 = document.getElementById('tbImg_' + idx).id;
+                        var idG1 = 'EditSingle';
+                        // var idH1 = ExamType[idx].innerHTML;
+                        var idH1 = document.getElementById('tbExamType_' + idx).innerHTML;
+                        // var idI1 = Examset[idx].innerHTML;
+                        var idI1 = document.getElementById('tbExamset_' + idx).innerHTML;
+                        // var idJ1 = Examformat[idx].innerHTML;
+                        var idJ1 = document.getElementById('tbExamformat_' + idx).innerHTML;
+                        // var idK1 = RowNo[idx].innerHTML;
+                        var idK1 = document.getElementById('tbRowNo_' + idx).innerHTML;
+                        // var idL1 = paperOrder[idx].innerHTML;
+                        var idL1 = document.getElementById('tbPaperOrder_' + idx).innerHTML;
+                        // var idM1 = Comment[idx].innerHTML;
+                        var idM1 = document.getElementById('tbComment_' + idx).innerHTML;
+                        // var idN1 = EditStatus[idx].innerHTML;
+                        var idN1 = document.getElementById('tbEditStatus_' + idx).innerHTML;
+
+                        pairedValues.push([idA1, idB1, idC1, idD1, idE1, idF1, idG1, idH1, idI1, idJ1, idK1, idL1, idM1, idN1]);
+
+                        fetch("/edit", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify(pairedValues)
+                        })
+                            .then(response => {
+                                console.log(response)
+                                if (response.ok) {
+                                    console.log("Edit_CheckPass => " + CheckPass)
+                                    return response.json();
+
+                                } else {
+
+                                    throw new Error('Network response was not ok');
+                                }
+
+                            })
+                            .then(data => {
+                                console.log(data)
+                                if (data.message == 'Fail') {
+
+                                    document.getElementById('tbCourseID_' + idx).innerHTML = data.CourseID;
+                                    document.getElementById('tbIDNumber_' + idx).innerHTML = data.IDnumber;
+                                    document.getElementById('tbNote_' + idx).innerHTML = data.TextError;
+                                    document.getElementById('tbCourseNameTH_' + idx).innerHTML = "";
+                                    document.getElementById('tbFullNameTH_' + idx).innerHTML = "";
+
+                                    if (data.RecheckPaper == 'False') {
+                                        CheckPass = '2';
+                                        document.getElementById(idx).style.display = "none";
+                                    } else {
+                                        CheckPass = '0';
+                                    }
+
+
+                                    notshowLoading();
+                                    OnClickOption(idx, idA1, idB1);
+
+                                } else {
+                                    CheckPass = '1';
+                                    if (data.Score == 'Pass') {
+                                        document.getElementById('tbExamresult_' + idx).innerHTML = '<i class="fa-solid fa-circle-check" style="color: #63E6BE;font-size:3rem;"></i>';
+                                    }
+                                    else {
+                                        document.getElementById('tbExamresult_' + idx).innerHTML = '<i class="fa-solid fa-circle-xmark" style="color: #e31616;font-size:3rem;"></i>';
+                                    }
+                                    document.getElementById('tbCourseNameTH_' + idx).innerHTML = data.CourseNameTH;
+                                    document.getElementById('tbCourseID_' + idx).innerHTML = data.CourseID;
+                                    document.getElementById('tbFullNameTH_' + idx).innerHTML = data.NameTH;
+
+                                    console.log('Message:', data.message);
+                                    console.log('Score:', data.Score);
+                                    // console.log('CourseNameTH:', data.CourseNameTH);
+                                    // console.log('CourseID:', data.CourseID);
+                                    // console.log('NameTH:', data.NameTH);
+                                    notshowLoading();
+                                    OnClickOption(idx, idA1, idB1);
+                                }
+                            })
+                            .catch(error => {
+                                CheckPass = '0';
+                                console.log("Edit_CheckPass => " + CheckPass)
+                                notshowLoading();
+                                OnClickOption(idx, idA1, idB1);
+                                console.log("EditCatch_CheckPass => " + CheckPass)
+                            });
+                        break;
+
+                    default:
+                        showLoading();
+                        for (var i = 0; i < idNumber.length; i++) {
+                            var idA = idNumber[i].innerHTML;
+                            var idB = courseID[i].innerHTML;
+                            var idC = Img[i].src;
+                            var idD = IsChangeIDNumber[i].innerHTML;
+                            var idE = IsChangeCourseID[i].innerHTML;
+                            var idF = Img[i].id;
+                            var idG = 'EditForm';
+                            var idH = ExamType[i].innerHTML;
+                            var idI = Examset[i].innerHTML;
+                            var idJ = Examformat[i].innerHTML;
+                            var idK = RowNo[i].innerHTML;
+                            var idL = paperOrder[i].innerHTML;
+                            var idM = Comment[i].innerHTML;
+                            var idN = EditStatus[i].innerHTML;
+
+
+                            pairedValues.push([idA, idB, idC, idD, idE, idF, idG, idH, idI, idJ, idK, idL, idM, idN]);
+
+                        }
+
+                        fetch("/edit", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify(pairedValues)
+                        })
+                            .then(response => {
+                                if (!response.ok) {
+                                    throw new Error('Network response was not ok');
+                                    alert("ไม่สามารถแก้ไขได้กรณุาลองใหม่อีกครั้งในภายหลัง", "error");
+                                    notshowLoading()
+
+                                }
+                                return response.text();
+                            })
+                            .then(html => {
+                                document.open();
+                                document.write(html);
+                                document.close();
+                            })
+                            .catch(error => {
+                                alert("ไม่สามารถแก้ไขได้กรณุาลองใหม่อีกครั้งในภายหลัง", "error");
+                                console.error('There was a problem with the fetch operation:', error);
+                                notshowLoading()
+
+                            });
+
+                        break;
+                }
+                console.log(pairedValues);
+            }
+        </script>
+
+        <script>
+            function showLoading() {
+                document.getElementById("loading").style.display = "block";
+                document.getElementById("overlay").style.display = "block";
+            }
+
+            function notshowLoading() {
+                document.getElementById("loading").style.display = "none";
+                document.getElementById("overlay").style.display = "none";
+            }
+        </script>
+
+        <script>
+            window.addEventListener('load', (event) => {
+                // OnGetNoRowNotInQueue();
+                checkConditionAndDisplayButton();
+            });
+        </script>
+
+        <script>
+            function checkConditionAndDisplayButton() {
+                document.querySelector('#no-more-tables tbody').innerHTML = '';
+                var checkSelect = document.getElementById('SetExamType').value;
+                // console.log('checkSelect => ' + checkSelect);
+
+                var isDisabled = checkSelect == 'กรุณาเลือก...';
+                var buttonHtml = '<div class="btn-group" role="group" aria-label="Basic mixed styles example">';
+                buttonHtml += '<button type="button" class="btn btn-danger" style="cursor: not-allowed;"><i class="fa-solid fa-triangle-exclamation fa-xl"></i><span id="strQty"></span></button>';
+                // buttonHtml += '<button type="button" class="btn btn-outline-primary' + (isDisabled ? ' disabled' : '') + '" id="btnCreateQueue" onclick="OnGenQueue()"><i class="fa-solid fa-plus"></i> สร้างคิว</button>';
+                buttonHtml += '<button type="button" class="btn btn-outline-primary' + (isDisabled ? ' disabled' : '') + '" data-bs-toggle="modal" data-bs-target="#CreateQ" onclick=uncheckCheckbox()><i class="fa-solid fa-plus"></i> สร้างคิว</button>';
+                buttonHtml += '<button type="button" class="btn btn-outline-success' + (isDisabled ? ' disabled' : '') + '" data-bs-toggle="modal" data-bs-target="#History" onclick="OnGetQueueHistory()"><i class="fa-solid fa-clock-rotate-left"></i> ประวัติ</button>';
+                buttonHtml += '</div>';
+
+                document.getElementById('buttonContainer').innerHTML = buttonHtml;
+
+                // OnGetNoRowNotInQueue();
+            }
+        </script>
+
+        <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+        <script src="../static/assets/js/thdoan-magnify-cca1561/js/jquery.magnify.js"></script>
+        <script>
+             $(document).ready(function () {
+            console.log('Document ready.');
+            $('.zoom').on('load', function () {
+                console.log('Image loaded. Initializing magnify plugin.');
+                if ($.fn.magnify) {
+                    $(this).magnify();
+                    console.log('Magnify plugin initialized.');
+                    $(window).resize();
+                } else {
+                    console.error('Magnify plugin is not loaded.');
+                }
+            }).each(function () {
+                if (this.complete) {
+                    $(this).trigger('load');
+                }
+            });
+        });
+        </script> -->
+
+        <script>
+            const imageContainer = document.querySelector('.image-container');
+            const zoomImage = document.querySelector('.zoom-image');
+            let zoom = 4
+
+            imageContainer.addEventListener('mousemove', (e) => {
+                const { left, top, width, height } = imageContainer.getBoundingClientRect();
+                const x = e.clientX - left;
+                const y = e.clientY - top;
+
+                const xPercent = (x / width) * 100;
+                const yPercent = (y / height) * 100;
+
+                zoomImage.style.transformOrigin = `${xPercent}% ${yPercent}%`;
+
+            });
+
+            imageContainer.addEventListener('wheel', (e) => {
+
+                const { left, top, width, height } = imageContainer.getBoundingClientRect();
+                const x = e.clientX - left;
+                const y = e.clientY - top;
+
+                const xPercent = (x / width) * 100;
+                const yPercent = (y / height) * 100;
+
+                zoomImage.style.transformOrigin = `${xPercent}% ${yPercent}%`;
+
+                zoom += e.deltaY * -0.02
+
+                zoom = Math.min(Math.max(1, zoom), 5)
+
+                if (zoom == 1) {
+                    zoomImage.style.left = '0px'
+                    zoomImage.style.top = '0px'
+                }
+
+                zoomImage.style.transform = `scale(${zoom})`
+
+
+            });
+
+            imageContainer.addEventListener('mouseleave', () => {
+                zoomImage.style.transform = 'scale(1)';
+            });
+        </script>
+</body>
+
+</html>
