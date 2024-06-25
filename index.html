@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Kanit", sans-serif;
+    }
+
+    #loading {
+        display: none;
+        position: fixed;
+        z-index: 999;
+        top: 50%;
+        left: 50%;
+        width: 100px;
+        height: 100px;
+        margin: -50px 0 0 -50px;
+        border: 16px solid #f3f3f3;
+        border-radius: 50%;
+        border-top: 16px solid #3498db;
+        width: 120px;
+        height: 120px;
+        -webkit-animation: spin 2s linear infinite;
+        animation: spin 2s linear infinite;
+    }
+
+
+.hrTitle {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        align-items: center;
+        column-gap: 1.6rem;
+    }
+
+    .hrTitle::before, .hrTitle::after {
+        content: "";
+        height: 2px;
+        background-color: #0d6efd;
+        display: block;
+    }
+
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    #overlay {
+        position: fixed;
+        /* Sit on top of the page content */
+        display: none;
+        /* Hidden by default */
+        width: 100%;
+        /* Full width (cover the whole page) */
+        height: 100%;
+        /* Full height (cover the whole page) */
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        /* Black background with opacity */
+        z-index: 500;
+        /* Specify a stack order in case you're using a different order for other elements */
+        cursor: pointer;
+        /* Add a pointer on hover */
+    }
+
+    @-webkit-keyframes spin {
+        0% {
+            -webkit-transform: rotate(0deg);
+        }
+
+        100% {
+            -webkit-transform: rotate(360deg);
+        }
+    }
+
+    @keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+    @media only screen and (max-width: 800px) {
+
+        /* Force table to not be like tables anymore */
+        #no-more-tables table,
+        #no-more-tables thead,
+        #no-more-tables tbody,
+        #no-more-tables th,
+        #no-more-tables td,
+        #no-more-tables tr {
+            display: block;
+            border: none;
+        }
+
+        /* Hide table headers (but not display: none;, for accessibility) */
+        #no-more-tables thead tr {
+            position: absolute;
+            top: -9999px;
+            left: -9999px;
+        }
+
+        #no-more-tables tr {
+            border: 1px solid #ccc;
+        }
+
+        #no-more-tables td {
+            /* Behave like a "row" */
+            border: none;
+            border-bottom: 1px solid #eee;
+            position: relative;
+            padding-left: 50%;
+            white-space: normal;
+            text-align: left;
+        }
+
+        #no-more-tables td:before {
+            /* Now like a table header */
+            position: absolute;
+            /* Top/left values mimic padding */
+            top: 6px;
+            left: 6px;
+            width: 45%;
+            padding-right: 10px;
+            white-space: nowrap;
+            text-align: left;
+            font-weight: bold;
+        }
+
+        /*
+    Label the data
+    */
+        #no-more-tables td:before {
+            content: attr(data-title);
+        }
+    }
+</style>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>มหาวิทยาลัยเฉลิมกาญจนา</title>
+    <link rel="stylesheet" href="https://pyscript.net/releases/2024.1.1/core.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+        integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script type="module" src="https://pyscript.net/releases/2024.1.1/core.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script> -->
+</head>
+    <script src="https://cdn-script.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+   <script>
+        function OnGetCourseID(IDnUMBER,ListItem) {
+            var username = 'NDYxNTBnNDBCMDBXMDFp';
+            var password = 'NTNQMjFi';
+            var basicAuth = btoa(username + ':' + password);
+            console.log(IDnUMBER.value)
+            var IDNumberValue = IDnUMBER.value;
+            console.log(IDNumberValue)
+
+            $.ajax({
+                url: "https://oc.cnu.ac.th:8082/api/ExamCourse/GetAllEnrollCourseStudent?UserID=" + IDNumberValue,
+                contentType: "application/json",
+                dataType: 'json',
+                type: "GET",
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("Authorization", "Basic " + basicAuth);
+                },
+                success: function (response, textStatus, jqXHR) {
+                     console.log(textStatus)
+                     console.log(response)
+
+                    var uniqueValues = new Set();
+                    response.forEach(function (item) {
+                        uniqueValues.add(`${item.CourseID} - ${item.CourseDetail} -  ${item.TypeName} `);
+                    });
+                    uniqueValues.forEach(function (value) {
+                        var option = $('<option>', {
+                            value: value.split(' - ')[0],
+                            text: value
+                        });
+                        $('#listItem'+'_'+ListItem).append(option);
+                    });
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+
+                }
+            });
+        }
+    </script>
+<body>
+    <div class="container-fluid">
+        <div id="loading"></div>
+        <div id="overlay"></div>
+
+        <div class="row my-3">
+            <div class="col-md">
+                <!-- <div class="card rounded-4" style="background-color: rgb(29, 155, 215); color: #fff; border: none;"> -->
+                <div class="card rounded-4 text-bg-primary" style="border: none;">
+                    <div class="card-body">
+                           <div class="row">
+                            <div class="col-auto">
+                                <form action="/logout" id="logout" method="post">
+                                <a class="btn" role="button" onclick="document.getElementById('logout').submit();" type="submit"><i class="fa-solid fa-sign-out fa-rotate-180 fa-2xl"
+                                        style="color: #ffffff;"></i><span style=" margin-left:5px ;font-size: 20px;color: #ffffff;"> LogOut</span> </a>
+                            </form>
+
+                            </div>
+                            <div class="col">
+                        <center>
+                            <h3>ตรวจข้อสอบ</h3>
+                        </center>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <form id="examForm" enctype="multipart/form-data">
+            <dl class=flashes>
+                <div class="row">
+                    <div class="col-md mb-3">
+                        <div class="border p-3 rounded-4">
+                            <label for="exampleFormControlInput1" class="form-label fw-bold">รูปแบบข้อสอบ</label>
+                            <div class="form-check">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" type="radio" name="SetTypeExam" value="1" required
+                                        onclick="toggleCourseSection()" checked>
+                                    ข้อสอบแนวตั้ง
+                                </label>
+                            </div>
+                            <div class="form-check">
+
+                                <div class="row">
+                                    <div class="col-md-auto">
+                                        <label class="form-check-label">
+                                            <input class="form-check-input" type="radio" name="SetTypeExam" value="2"
+                                                required onclick="toggleCourseSection()">
+                                            ข้อสอบแนวนอน
+                                        </label>
+                                    </div>
+                                    <div class="col">
+                                        <input type="hidden" class="form-control" name="Course" id="courseInput"
+                                            value="CNU123" required placeholder="กรุณากรอก รหัสวิชา">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md mb-3">
+                        <div class="border p-3 rounded-4">
+                            <label for="exampleFormControlInput1" class="form-label fw-bold">ชุดข้อสอบ</label>
+                            <div class="form-check">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" type="radio" name="SetExam" value="Set1" required checked>
+                                    ข้อสอบชุดที่ 1 (ข้อสอบ 5 ตัวเลือก)
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" type="radio" name="SetExam" value="Set2" required>
+                                    ข้อสอบชุดที่ 2 (ข้อสอบ 4 ตัวเลือก)
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                     <div class="col-md mb-3">
+                        <div class="border p-3 rounded-4">
+                            <label class="form-label fw-bold">ประเภทการสอบ</label>
+                            <div class="form-check">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" type="radio" name="SetExamType" value="สอบปลายภาค" required>
+                                    สอบปลายภาค
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" type="radio" name="SetExamType" value="สอบย้อนหลัง"  required>
+                                    สอบย้อนหลัง
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-3" id="TextNote">
+                    <label class="form-label"><strong>หมายเหตุ : </strong></label>
+                    <textarea class="form-control" rows="3" placeholder="กรอกหมายเหตุ"  maxlength="100"  name="NoteDetail"></textarea>
+                </div>
+                <div class="row d-flex justify-content-center">
+                    <div class="col-md-9 my-3">
+                        <h3 class="hrTitle">อัปโหลดไฟล์</h3>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-auto">
+                        <a class="btn btn-warning" href="{{ url_for('edit_form') }}" role="button"><i class="fa-solid fa-triangle-exclamation fa-beat"></i> แก้ปัญหา</a>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md">
+                        <div class="input-group">
+                            <input type="file" class="form-control" name="files[]" multiple="true" id= "FileInput" autocomplete="off"
+                                required>
+                            <input type="submit" class="btn btn-outline-primary" ">
+                        </div>
+                    </div>
+                </div>
+
+
+                {% with messages = get_flashed_messages() %}
+                {% if messages %}
+
+                {% for message in messages %}
+                <p style="color: red;">{{ message }}</p>
+                {% endfor %}
+                {% endif %}
+                {% endwith %}
+            </dl>
+
+        </form>
+
+        {% if filenames %}
+        <div class="table-responsive" id="no-more-tables">
+            <table class="table table-bordered col-sm-12 table-striped table-condensed table-hover cf">
+                <thead class="cf">
+                    <tr>
+                        <th scope="col">
+                            <center>ลำดับ</center>
+                        </th>
+                        <th scope="col">
+                            <center>เลขประจำตัว</center>
+                        </th>
+                        <th scope="col">
+                            <center>ชื่อนามสกุล</center>
+                        </th>
+                        <th scope="col">
+                            <center>รหัสวิชา</center>
+                        </th>
+                        <th scope="col">
+                            <center>ชื่อวิชา</center>
+                        </th>
+                        <th scope="col">
+                            <center>ผลการสอบ</center>
+                        </th>
+                                                <th scope="col">
+                            <center>ประเภทการสอบ</center>
+                        </th>
+                        <th scope="col">
+                            <center>ผลการถ่ายกระดาษ</center>
+                        </th>
+                        {% if TypeUser == '1' %}
+
+                        <th scope="col">
+                            <center>รูปภาพ</center>
+                        </th>
+                        <th scope="col">
+                            <center>ปัญหา</center>
+                        </th>
+                        {% if Checks %}
+                        <th scope="col">
+                            <center>แก้ปัญหา</center>
+                        </th>
+                        {% endif %}
+                        {% else %}
+                        {% if Failed == 'True' %}
+
+                        <th scope="col">
+                            <center>รูปภาพ</center>
+                        </th>
+                        <th scope="col">
+                            <center>ปัญหา</center>
+                        </th>
+                        {% if Checks %}
+                        <th scope="col">
+                            <center>แก้ปัญหา</center>
+                        </th>
+                        {% endif %}
+                        {% endif %}
+                        {% endif %}
+                         <th scope="col" class = "ClassNote">
+                            <center>หมายเหตุ</center>
+                        </th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    {% set counter = 1 %}
+                    {% for file_path, ID, status,printed_data,CourseName,FullName,CourseIDs,Examresults,Recheck ,TextError,SetExamType,RowID,indexs in
+                    filenames %}
+                    <tr>
+                        <td data-title="ลำดับ">
+                            <center>{{ indexs }}</center>
+                        </td>
+                        <td data-title="เลขประจำตัว">
+                            <center>{% if ID %} {{ ID }} {% else %} - {% endif %}</center>
+                        </td>
+                        <td data-title="ชื่อ-นามสกุล">
+                            <center>{% if FullName %} {{ FullName }} {% else %} - {% endif %}</center>
+                        </td>
+                        <td data-title="รหัสวิชา">
+                            <center>{% if CourseIDs %} {{ CourseIDs }} {% else %} - {% endif %}</center>
+                        </td>
+                        <td data-title="ชื่อวิชา">
+                            <center>{% if CourseName %} {{ CourseName }} {% else %} - {% endif %}</center>
+                        </td>
+                        <td data-title="ผลการสอบ">
+                            <center>{% if Examresults %} {% if Examresults == "Pass" %} <i
+                                    class="fa-solid fa-circle-check" style="color: #63E6BE;font-size:4rem;"></i> {% else %} <i
+                                    class="fa-solid fa-circle-xmark" style="color: #e31616;font-size:4rem;"></i> {% endif %} {% else %}
+                                - {% endif %}</center>
+                        </td>
+                         <td data-title="ประเภทการสอบ"><center>{% if SetExamType %} {{ SetExamType }} {% else %} - {% endif %}</center></td>
+
+                        <td data-title="ผลการถ่ายกระดาษ">
+                            <center>{{ status }}</center>
+
+                        </td>
+
+
+
+
+                        {% if TypeUser == '1' %}
+                        <td data-title="รูปภาพ">
+                            <center>
+                                {% if TypeUser == '1' %}
+                                    {% if Recheck == 'False' %}
+                                        <img id="img_{{ indexs }}" width="100" height="100"
+                                          src="{{ url_for('display_image', filename=file_path) }}">
+                                    {% else %}
+                                        <img class="ImageAnswer" id="img_{{ indexs }}" width="100" height="100"
+                                            src="{{ url_for('display_image', filename=file_path) }}">
+                                    {% endif %}
+
+                                    <button type="button" class="btn" onclick="openModal('{{ indexs }}')"><i
+                                            class="fa-solid fa-magnifying-glass-plus"></i></button>
+                                {% else %}
+
+                                    {% if TextError %}
+                                        {% if Recheck == 'False' %}
+                                            <img id="img_{{ indexs }}" width="100" height="100"
+                                                src="{{ url_for('display_image', filename=file_path) }}">
+                                        {% else %}
+                                             <img class="ImageAnswer" id="img_{{ indexs }}" width="100" height="100"
+                                                src="{{ url_for('display_image', filename=file_path) }}">
+                                        {% endif %}
+
+                                        <button type="button" class="btn" onclick="openModal('{{ indexs }}')"><i
+                                            class="fa-solid fa-magnifying-glass-plus"></i></button>
+
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                {% endif %}
+
+                            </center>
+                        </td>
+                        <td data-title="ปัญหา">
+                            <center>
+                          {% if TextError %}
+                             {{ TextError }}
+                          {% else %}
+                                {% if TypeUser == '1' %}
+                                    {% if printed_data %}
+                                     {% for data in printed_data %}
+                                        {{ data }}<br>
+                                     {% endfor %}
+                                    {% else %}
+                                      -
+                                    {% endif %}
+                                {% else %}
+                                -
+                                {% endif %}
+                            {% endif %}
+                                </center>
+                        </td>
+                        <td data-title="แก้ปัญหา">
+                            <center>
+                            <!-- Button trigger modal -->
+                                                {% if Recheck == 'False' %} - {% else %}
+
+                             {% if ID %} <input type="hidden" id="IDNumber_{{ indexs }}" class="IDNumberInput" value="{{ ID }}" ></input> {% else %}
+                            <div class="mb-3">
+                                <label  class="form-label">รหัสประจำตัว : </label>
+                                <input type="number" id="IDNumber_{{ indexs }}" class="form-control IDNumberInput"
+                                    value="" placeholder="รหัสประจำตัว"></input>
+                            </div>
+                            {% endif %}
+                             {% if CourseIDs %}  <input type="hidden" id="CourseID_{{ indexs }}" class="CourseIDInput" value="{{ CourseIDs }}" ></input> {% else %}
+                            <label  class="form-label">รหัสวิชา : </label> <input class=" form-control CourseIDInput" list="listItem_{{ indexs }}"
+                            id="CourseID_{{ indexs }}" placeholder="กรุณาเลือก">
+                        <datalist id="listItem_{{ indexs }}">
+                        </datalist><script>OnGetCourseID(IDNumber_{{ indexs }},{{ indexs }})</script>{% endif %}
+                                                {% endif %}
+                        </center>
+                        </td>
+                        {% else %}
+                        {% if Failed == 'True' %}
+                        <td data-title="รูปภาพ">
+                            <center>
+                                {% if TypeUser == '1' %}
+                                    {% if Recheck == 'False' %}
+                                        <img id="img_{{ indexs }}" width="100" height="100"
+                                          src="{{ url_for('display_image', filename=file_path) }}">
+                                    {% else %}
+                                        <img class="ImageAnswer" id="img_{{ indexs }}" width="100" height="100"
+                                            src="{{ url_for('display_image', filename=file_path) }}">
+                                    {% endif %}
+
+                                    <button type="button" class="btn" onclick="openModal('{{ indexs }}')"><i
+                                            class="fa-solid fa-magnifying-glass-plus"></i></button>
+                                {% else %}
+
+                                    {% if TextError %}
+                                        {% if Recheck == 'False' %}
+                                            <img id="img_{{ indexs }}" width="100" height="100"
+                                                src="{{ url_for('display_image', filename=file_path) }}">
+                                        {% else %}
+                                             <img class="ImageAnswer" id="img_{{ indexs }}" width="100" height="100"
+                                                src="{{ url_for('display_image', filename=file_path) }}">
+                                        {% endif %}
+
+                                        <button type="button" class="btn" onclick="openModal('{{ indexs }}')"><i
+                                            class="fa-solid fa-magnifying-glass-plus"></i></button>
+
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                {% endif %}
+
+                            </center>
+                        </td>
+                        <td data-title="ปัญหา">
+                            <center>
+                          {% if TextError %}
+                             {{ TextError }}
+                          {% else %}
+                                {% if TypeUser == '1' %}
+                                    {% if printed_data %}
+                                     {% for data in printed_data %}
+                                        {{ data }}<br>
+                                     {% endfor %}
+                                    {% else %}
+                                      -
+                                    {% endif %}
+                                {% else %}
+                                -
+                                {% endif %}
+                            {% endif %}
+                                </center>
+                        </td>
+                        <td data-title="แก้ปัญหา">
+                            <center>
+                            <!-- Button trigger modal -->
+                                                {% if Recheck == 'False' %} - {% else %}
+
+                             {% if ID %} <input type="hidden" id="IDNumber_{{ indexs }}" class="IDNumberInput" value="{{ ID }}" ></input> {% else %}
+                            <div class="mb-3">
+                                {% if TypePaper == "1" %}
+                                <label  class="form-label">รหัสบัตรประชาชน : </label>
+                                <input type="number" id="IDNumber_{{ indexs }}" class="form-control IDNumberInput"
+                                    value="" placeholder="รหัสบัตรประชาชน"></input>
+                                {% else %}
+                                 <label  class="form-label">รหัสนักศึกษา : </label>
+                                <input type="number" id="IDNumber_{{ indexs }}" class="form-control IDNumberInput"
+                                    value="" placeholder="รหัสนักศึกษา"></input>
+                                {% endif %}
+                            </div>
+                            {% endif %}
+                             {% if CourseIDs %}  <input type="hidden" id="CourseID_{{ indexs }}" class="CourseIDInput" value="{{ CourseIDs }}" ></input> {% else %}
+                            <label  class="form-label">รหัสวิชา : </label> <input class=" form-control CourseIDInput" list="listItem_{{ indexs }}"
+                            id="CourseID_{{ indexs }}" placeholder="กรุณาเลือก">
+                        <datalist id="listItem_{{ indexs }}">
+                        </datalist><script>OnGetCourseID(IDNumber_{{ indexs }},{{ indexs }})</script>{% endif %}
+                                                {% endif %}
+                        </center>
+                        </td>
+                        {% endif %}
+                        {% endif %}
+
+                         <td data-title="หมายเหตุ" class = "ClassNote">
+                             <center>
+                              {% if Recheck == 'False' %}
+                             {% if status != 'Fail' %}
+                             <input type="text" id="Note_{{ indexs }}" maxLength="100" class="NoteInput" placeholder="หมายเหตุ" >
+                            <input type="hidden" id="RowID_{{ indexs }}"  class="RowIDInput" value="{{ RowID }}" >
+
+                             {% endif %}
+                             {% else %}
+                                 -
+                             {% endif %}
+                             </center>
+                        </td>
+                    </tr>
+                    {% set counter = counter+1 %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% if Checks == "True" %}
+        <div class="d-grid gap-2 col-6 mx-auto my-3">
+            <button class="btn btn-primary myStyleBtn_Filled" type="button" onclick="EditFormAnswer()"><i
+                    class="fa-solid fa-pen"></i> แก้ไข</button>
+        </div>
+        <!-- <button onclick="EditFormAnswer()">
+                            แก้ไข
+                        </button> -->
+        {% endif %}
+
+                <div class="d-grid gap-2 col-6 mx-auto my-3 " >
+            <button class="btn btn-primary myStyleBtn_Filled ClassNote" type="button" onclick="SendNote()"><i
+                    class="fa-solid fa-pen"></i> ส่งหมายเหตุ</button>
+        </div>
+        {% endif %}
+
+    </div>
+
+    <!-- Vertically centered modal -->
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <input  type="hidden" id = getIDNumber></input>
+            <input  type="hidden" id = getCourse></input>
+
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fa-brands fa-resolving"></i> แก้ปัญหา</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    {% if TypePaper == "1" %}
+                    <div class="mb-3">
+                        <label class="form-label">บัตรประชาชน :</label>
+                        <input type="text" id="InputIDNumbers" class=" form-control"
+                            placeholder="กรุณากรอก เลขบัตรประชาชน" maxlength="13">
+                    </div>
+                    {% else %}
+                    <div class="mb-3">
+                        <label class="form-label">รหัสนักศึกษา :</label>
+                        <input type="text" id="InputIDNumbers"  form-control"
+                            placeholder="กรุณากรอก รหัสนักศึกษา" maxlength="10">
+                    </div>
+                    {% endif %}
+                    <div class="d-grid gap-2 my-3">
+                        <button class="btn btn-primary" type="button" onclick="OnGetCourseID()"><i
+                                class="fa-solid fa-magnifying-glass"></i> ค้นหา</button>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">รหัสวิชา :</label>
+                        <input class=" form-control" list="listItem"
+                            id="InputCourseID" placeholder="กรุณาเลือก">
+                        <datalist id="listItem">
+                        </datalist>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="showData()">ตกลง</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showData() {
+            var IDnumber = document.getElementById("getIDNumber");
+            var CourseID = document.getElementById("getCourse");
+            var showID = document.getElementById(IDnumber.value);
+            var showCourseID = document.getElementById(CourseID.value);
+
+            var idNumberValue = document.getElementById("InputIDNumbers").value;
+            var CourseidValue = document.getElementById("InputCourseID").value;
+            showID.value = idNumberValue;
+            showCourseID.value = CourseidValue;
+
+        }
+    </script>
+
+    <script src="https://cdn-script.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+<script>
+        function sendIndex(index_IDNumber, index_course) {
+
+            var IDnumber = document.getElementById("getIDNumber");
+            var CourseID = document.getElementById("getCourse");
+
+            IDnumber.value = index_IDNumber
+            CourseID.value = index_course
+
+
+        }
+    </script>
+    <script>
+
+
+        var isMobile = window.orientation > -1;
+        //alert(isMobile ? 'Mobile' : 'Not mobile');
+        if (isMobile == true){
+        var lst = document.getElementById("FileInput");
+        document.querySelectorAll(".ClassNote").forEach(element => element.style.display = "none");
+        lst.multiple = false;
+         TextNoteID = document.getElementById("TextNote");
+         TextNoteID.style.display = "none";
+        }else{
+
+         document.querySelectorAll(".ClassNote").forEach(element => element.style.display = "none");
+        }
+        function SendNote() {
+            showLoading();
+            var elementsNoteID = document.querySelectorAll('.NoteInput');
+            var elementsRowID = document.querySelectorAll('.RowIDInput');
+            var pairedValues = [];
+            elementsNoteID.forEach(function (elementsID, index) {
+                // ดึง ID ขององค์ประกอบที่มีคลาส "a"
+                var idA = elementsID.value;
+                // ดึง ID ขององค์ประกอบที่มีคลาส "b" โดยใช้ index เพื่อให้ลำดับตรงกัน
+                var idB = elementsRowID[index].value;
+                pairedValues.push([idA, idB]);
+            });
+
+            fetch("/sendNote", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(pairedValues)
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.text();
+                })
+                .then(html => {
+                    alert("บันทึกสำเร็จแล้ว", "success");
+                    notshowLoading()
+                })
+                .catch(error => {
+                    alert("บันทึกไม่สำเร็จ", "error");
+                    console.error('There was a problem with the fetch operation:', error);
+                    notshowLoading()
+                });
+
+        }
+
+                document.getElementById('examForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent the default form submission
+            showLoading();
+
+
+            // Create a FormData object from the form
+            let formData = new FormData(this);
+
+            // Use fetch to send a POST request
+            fetch('/index_check', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.text();
+                })
+                                .then(html => {
+                    document.open(); // เริ่มเปลี่ยนหน้าเว็บใหม่
+                    document.write(html); // เขียน HTML ลงในหน้าเว็บ
+                    document.close(); // จบการเปลี่ยนหน้าเว็บ
+                })
+            .catch(error => {
+                // Handle error - display an error message
+                console.error('Error:', error);
+            });
+        });
+
+
+
+
+        function EditFormAnswer() {
+            showLoading();
+            var elementsID = document.querySelectorAll('.IDNumberInput');
+            var elementsCourse = document.querySelectorAll('.CourseIDInput');
+            var elementsImg = document.querySelectorAll('.ImageAnswer');
+
+            var pairedValues = [];
+            elementsID.forEach(function (elementsID, index) {
+                // ดึง ID ขององค์ประกอบที่มีคลาส "a"
+
+                var idA = elementsID.value;
+
+                // ดึง ID ขององค์ประกอบที่มีคลาส "b" โดยใช้ index เพื่อให้ลำดับตรงกัน
+
+                var idB = elementsCourse[index].value;
+                var idC = elementsImg[index].src;
+                var idD = elementsID.type;
+                var idE = elementsCourse[index].type;
+                var idF = elementsImg[index].id;
+                var idG = "Mainpage";
+
+
+                pairedValues.push([idA, idB, idC, idD, idE,idF,idG]);
+            });
+            fetch("/edit", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(pairedValues)
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.text();
+                })
+                .then(html => {
+                    document.open(); // เริ่มเปลี่ยนหน้าเว็บใหม่
+                    document.write(html); // เขียน HTML ลงในหน้าเว็บ
+                    document.close(); // จบการเปลี่ยนหน้าเว็บ
+                })
+                .catch(error => {
+                    console.error('There was a problem with the fetch operation:', error);
+                });
+        }
+
+
+
+        function openModal(ID) {
+            var modal = document.createElement('div');
+            modal.style.position = 'fixed';
+            modal.style.zIndex = '2';
+            modal.style.paddingTop = '100px';
+            modal.style.left = '0';
+            modal.style.top = '0';
+            modal.style.width = '100%';
+            modal.style.height = '100%';
+            modal.style.overflow = 'auto';
+            modal.style.backgroundColor = 'rgba(0,0,0,0.9)';
+
+            var closeButton = document.createElement('button');
+            closeButton.innerHTML = '&times;';
+            closeButton.style.position = 'absolute';
+            closeButton.style.top = '10px';
+            closeButton.style.right = '10px';
+            closeButton.style.fontSize = '50px';
+            closeButton.style.backgroundColor = 'transparent';
+            closeButton.style.border = 'none';
+            closeButton.style.color = '#fff';
+            closeButton.style.cursor = 'pointer';
+
+            var imgContainer = document.createElement('div');
+            imgContainer.style.display = 'flex';
+            imgContainer.style.justifyContent = 'center';
+
+            var img = document.createElement('img');
+            img.src = document.getElementById('img_' + ID).src;
+            if (isMobile == true){
+            img.style.width = '100%';
+            img.style.height = '100%';
+            }else{
+            img.style.width = '750px';
+            img.style.height = '750px';
+            }
+            imgContainer.appendChild(img);
+            imgContainer.overflow = 'auto';
+            modal.appendChild(imgContainer);
+            modal.appendChild(closeButton);
+            modal.onclick = function () {
+                modal.remove();
+            };
+            closeButton.onclick = function () {
+                modal.remove();
+            };
+
+            document.body.appendChild(modal);
+        }
+
+        function toggleCourseSection() {
+            var courseInput = document.getElementById("courseInput");
+            var radioHorizontal = document.querySelector('input[name="SetTypeExam"][value="2"]');
+            if (radioHorizontal.checked) {
+                courseInput.type = "hidden";
+                courseInput.value = "CNU123"; // Set the value when the input is hidden
+            } else {
+                courseInput.type = "hidden";
+                courseInput.value = "CNU123"; // Set the value when the input is hidden
+            }
+        }
+
+        function validateAndShowLoading() {
+            // ตรวจสอบว่ามีข้อมูลที่ required หรือไม่
+            var fileInput = document.querySelector('input[name="files[]"]');
+            var courseInput = document.querySelector('input[name="Course"]');
+            var setTypeExamInputs = document.querySelectorAll('input[name="SetTypeExam"]');
+            var setExamInputs = document.querySelectorAll('input[name="SetExam"]');
+
+            if (fileInput.value.trim() === '' || courseInput.value.trim() === '') {
+                return;
+            }
+
+            var setTypeExamChecked = Array.from(setTypeExamInputs).some(input => input.checked);
+            var setExamChecked = Array.from(setExamInputs).some(input => input.checked);
+
+            if (!setTypeExamChecked || !setExamChecked) {
+                return;
+            }
+
+            showLoading();
+        }
+
+
+
+
+        function showLoading() {
+            document.getElementById("loading").style.display = "block";
+            document.getElementById("overlay").style.display = "block";
+
+        }
+
+                function notshowLoading() {
+            document.getElementById("loading").style.display = "none";
+            document.getElementById("overlay").style.display = "none";
+
+        }
+
+        if (show_loading) {
+            document.getElementById("loading").style.display = "none";
+            document.getElementById("overlay").style.display = "none";
+        }
+
+
+    </script>
+
+
+
+</body>
+
+</html>
