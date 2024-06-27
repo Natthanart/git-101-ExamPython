@@ -190,16 +190,15 @@
             <div class="col-md">
                 <div class="card rounded-4 text-bg-primary" style="border: none;">
                     <div class="card-body">
-                        <div class="row">
-                            <div class="col-auto">
+                        <div class="row d-flex align-items-center">
+                            <div class="col">
                                 <a class="btn" role="button"><i class="fa-solid fa-circle-arrow-left fa-2xl"
-                                        style="color: #fff;"></i></a>
+                                    style="color: #fff;"></i></a>
                             </div>
                             <div class="col">
-                                <center>
-                                    <h3>ตรวจข้อสอบ</h3>
-                                </center>
+                                <h3 class="text-center">ตรวจข้อสอบ</h3>
                             </div>
+                            <div class="col"></div>
                         </div>
                     </div>
                 </div>
@@ -345,7 +344,7 @@
                                                 <input type="text" class="form-control" placeholder="เลขบัตรประชาชน"
                                                     name="IDNumber" maxlength="13">
                                                 <div class="invalid-feedback">
-                                                    กรุณากรอก
+                                                    กรุณากรอก (มากกว่า 2 ตัว)
                                                 </div>
                                             </div>
                                         </div>
@@ -374,6 +373,28 @@
                                                 <label class="form-label">นามสกุล : </label>
                                                 <input type="text" class="form-control" placeholder="นามสกุล"
                                                     name="SurNameTH">
+                                                <div class="invalid-feedback">
+                                                    กรุณากรอก
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md">
+                                            <div class="mb-3">
+                                                <label class="form-label">คณะ : </label>
+                                                <input type="text" class="form-control" placeholder="คณะ"
+                                                    name="Faculty">
+                                                <div class="invalid-feedback">
+                                                    กรุณากรอก
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md">
+                                            <div class="mb-3">
+                                                <label class="form-label">สาขา : </label>
+                                                <input type="text" class="form-control" placeholder="สาขา"
+                                                    name="Department">
                                                 <div class="invalid-feedback">
                                                     กรุณากรอก
                                                 </div>
@@ -604,6 +625,7 @@
                     });
 
                     if (!response.ok) {
+                        HistoryLi.innerHTML = '';
                         throw new Error('ไม่พบข้อมูล');
                     }
 
@@ -635,6 +657,7 @@
                     });
 
                     if (!response.ok) {
+                        tbody.innerHTML = '';
                         throw new Error('ไม่พบข้อมูล');
                     }
 
@@ -847,7 +870,7 @@
 
 
             function OnClickOption(index, IDNumber, CourseID) {
-                console.log('index => ' + index + ' IDNumber => ' + IDNumber + ' CourseID => ' + CourseID);
+                // console.log('index => ' + index + ' IDNumber => ' + IDNumber + ' CourseID => ' + CourseID);
 
                 let courseID = document.getElementsByName('CourseID');
                 let courseNameTH = document.getElementsByName('CourseNameTH');
@@ -862,7 +885,10 @@
                 let CourseIDold = document.getElementById('CourseIDold');
                 CourseIDold.innerHTML = CourseID;
 
-                console.log("ClickOpt_CheckPass => " + CheckPass);
+                let faculty = document.getElementsByName('Faculty');
+                let department = document.getElementsByName('Department');
+
+                // console.log("ClickOpt_CheckPass => " + CheckPass);
 
                 if (CheckPass == "1") {
                     document.getElementById('OptionModalbody').innerHTML = '<center><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></center>';
@@ -870,14 +896,14 @@
                     document.getElementById('tbEditStatus_' + index).textContent = 'Complete';
                     document.getElementById('tbNote_' + index).textContent = '-';
                     CheckPass = '';
-                    console.log("ClickOpt_CheckPass1 => " + CheckPass);
+                    // console.log("ClickOpt_CheckPass1 => " + CheckPass);
 
                 } else if (CheckPass == "2") {
                     document.getElementById('OptionModalbody').innerHTML = '<center><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></center>';
                     document.getElementById('OptionModalbody').innerHTML = '<center><i class="fa-solid fa-circle-xmark" style="color: #e31616; font-size: 3rem;"></i><span style="font-size: 2rem;"> ล้มเหลว</span></center>';
                     document.getElementById('tbEditStatus_' + index).textContent = 'Fail';
                     CheckPass = '';
-                    console.log("ClickOpt_CheckPass1 => " + CheckPass);
+                    // console.log("ClickOpt_CheckPass1 => " + CheckPass);
 
                 }
                 else if (CheckPass == "0") {
@@ -922,6 +948,14 @@
                         element.setAttribute('id', 'SurNameTH_' + index);
                         element.value = "";
                     });
+                    faculty.forEach((element, idx) => {
+                        element.setAttribute('id', 'Faculty_' + index);
+                        element.value = "";
+                    });
+                    department.forEach((element, idx) => {
+                        element.setAttribute('id', 'Department_' + index);
+                        element.value = "";
+                    });
 
                     const lmDataStudent = document.getElementById('listDataStudent');
                     lmDataStudent.innerHTML = "";
@@ -944,6 +978,10 @@
                     mCourseID.classList.remove("is-invalid");
                     var CourseNameTH = document.getElementById('CourseNameTH_' + index);
                     CourseNameTH.classList.remove("is-invalid");
+                    var Faculty = document.getElementById('Faculty_' + index);
+                    Faculty.classList.remove("is-invalid");
+                    var Department = document.getElementById('Department_' + index);
+                    Department.classList.remove("is-invalid");
 
                     document.getElementById('OptionModalbody').style.display = 'none';
                     CheckPass = '';
@@ -955,7 +993,7 @@
                     if (CheckPass == "") {
                         EditFormAnswer("1", index);
                         document.getElementById('OptionModalbody').innerHTML = '<center><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></center>';
-                        console.log("ClickOpt_CheckPass3 => " + CheckPass);
+                        // console.log("ClickOpt_CheckPass3 => " + CheckPass);
 
                     }
                 }
@@ -972,6 +1010,8 @@
                 var StudentID = document.getElementById('StudentID_' + index);
                 var NameTH = document.getElementById('NameTH_' + index);
                 var SurNameTH = document.getElementById('SurNameTH_' + index);
+                var Faculty = document.getElementById('Faculty_' + index);
+                var Department = document.getElementById('Department_' + index);
 
                 if (IDNumber.value == null || IDNumber.value == "") {
                     IDNumber.value = '-';
@@ -989,20 +1029,39 @@
                     SurNameTH.value = '-'
                 }
 
-                if (IDNumber.value == "-" && StudentID.value == "-" && NameTH.value == "-" && SurNameTH.value == "-") {
+                if (Faculty.value == null || Faculty.value == "") {
+                    Faculty.value = '-'
+                }
+
+                if (Department.value == null || Department.value == "") {
+                    Department.value = '-'
+                }
+
+                if (IDNumber.value == "-" && StudentID.value == "-" && NameTH.value == "-" && SurNameTH.value == "-" && Faculty.value == "-" && Department.value == "-") {
                     IDNumber.classList.add("is-invalid");
                     StudentID.classList.add("is-invalid");
                     NameTH.classList.add("is-invalid");
                     SurNameTH.classList.add("is-invalid");
+                    Faculty.classList.add("is-invalid");
+                    Department.classList.add("is-invalid");
                     closebtnloading('btnSerachDataStudent', 'spinnerSerachDataStudent', 'btnSerachDataStudentText', '<i class="fa-solid fa-magnifying-glass"></i> ค้นหาข้อมูล');
+                    document.getElementById('listDataStudent').innerHTML = '';
+                }
+                else if (IDNumber.value != "-" && IDNumber.value.length > 0 && IDNumber.value.length <= 2){
+                    IDNumber.classList.add("is-invalid");
+                    closebtnloading('btnSerachDataStudent', 'spinnerSerachDataStudent', 'btnSerachDataStudentText', '<i class="fa-solid fa-magnifying-glass"></i> ค้นหาข้อมูล');
+                    document.getElementById('listDataStudent').innerHTML = '';
                 }
                 else {
                     IDNumber.classList.remove("is-invalid");
                     StudentID.classList.remove("is-invalid");
                     NameTH.classList.remove("is-invalid");
                     SurNameTH.classList.remove("is-invalid");
+                    Faculty.classList.remove("is-invalid");
+                    Department.classList.remove("is-invalid");
 
-                    const url = 'https://localhost:7112/api/ExamCourse/OnSearchDataStudent?IDNumber=' + IDNumber.value + '&StudentID=' + StudentID.value + '&NameTH=' + NameTH.value + '&SurNameTH=' + SurNameTH.value;
+                    const url = 'https://localhost:7112/api/ExamCourse/OnSearchDataStudent?IDNumber=' + IDNumber.value + '&StudentID=' + StudentID.value + '&NameTH=' + NameTH.value + '&SurNameTH=' + SurNameTH.value + '&Faculty=' +  Faculty.value + '&Department=' + Department.value;
+
 
                     const encodedCredentials = btoa(`${username}:${password}`);
 
@@ -1014,8 +1073,10 @@
                         });
 
                         if (!response.ok) {
-                            throw new Error('ไม่พบข้อมูล');
+                            let errorMessage = await response.text();
+                            lmDataStudent.innerHTML = '<span style="color: red;">'+ errorMessage +'</span>';
                             closebtnloading('btnSerachDataStudent', 'spinnerSerachDataStudent', 'btnSerachDataStudentText', '<i class="fa-solid fa-magnifying-glass"></i> ค้นหาข้อมูล');
+                            throw new Error(errorMessage || 'ไม่พบข้อมูล');
                         }
 
                         let data = await response.json();
@@ -1033,7 +1094,7 @@
                                     var NameTH = (dataStd.NameTH).replace(/ |_/g, '');
                                     var SurNameTH = (dataStd.SurNameTH).replace(/ |_/g, '');
 
-                                    lmDataStudent.innerHTML += '<div class="form-check"><input class="form-check-input" type="radio" name="radioStudent" id="student_' + idx + '" value="' + IDNumber + ' ' + NameTH + ' ' + SurNameTH + '"><label class="form-check-label" for="student_' + idx + '">' + dataStd.IDNumber + ' ' + dataStd.PrefixNameID + dataStd.NameTH + ' ' + dataStd.SurNameTH + '</label></div>'
+                                    lmDataStudent.innerHTML += '<div class="form-check"><input class="form-check-input" type="radio" name="radioStudent" id="student_' + idx + '" value="' + IDNumber + ' ' + NameTH + ' ' + SurNameTH + '"><label class="form-check-label" for="student_' + idx + '">' + dataStd.IDNumber + ' ' + dataStd.PrefixNameID + dataStd.NameTH + ' ' + dataStd.SurNameTH + ' (' + dataStd.FacultyName + ':' + dataStd.DepartmentName + ')</label></div>'
                                 });
                             }
                             else {
@@ -1041,18 +1102,17 @@
                                     var StudentID = (dataStd.StudentID).replace(/ |_/g, '');
                                     var NameTH = (dataStd.NameTH).replace(/ |_/g, '');
                                     var SurNameTH = (dataStd.SurNameTH).replace(/ |_/g, '');
-                                    lmDataStudent.innerHTML += '<div class="form-check"><input class="form-check-input" type="radio" name="radioStudent" id="student_' + idx + '" value="' + StudentID + ' ' + NameTH + ' ' + SurNameTH + '"><label class="form-check-label" for="student_' + idx + '">' + dataStd.StudentID + ' ' + dataStd.PrefixNameID + dataStd.NameTH + ' ' + dataStd.SurNameTH + '</label></div>'
+                                    lmDataStudent.innerHTML += '<div class="form-check"><input class="form-check-input" type="radio" name="radioStudent" id="student_' + idx + '" value="' + StudentID + ' ' + NameTH + ' ' + SurNameTH + '"><label class="form-check-label" for="student_' + idx + '">' + dataStd.StudentID + ' ' + dataStd.PrefixNameID + dataStd.NameTH + ' ' + dataStd.SurNameTH + ' (' + dataStd.FacultyName + ':' + dataStd.DepartmentName + ')</label></div>'
                                 });
                             }
 
-                            document.getElementById('btnChooseStudent').innerHTML = '<button type="button" class="btn btn-success mb-3" onclick="showSelectedValue()">ยืนยัน</button>';
+                            document.getElementById('btnChooseStudent').innerHTML = '<button type="button" class="btn btn-success mb-3" onclick="showSelectedValue()">เลือก</button>';
                         }
 
                         closebtnloading('btnSerachDataStudent', 'spinnerSerachDataStudent', 'btnSerachDataStudentText', '<i class="fa-solid fa-magnifying-glass"></i> ค้นหาข้อมูล');
 
                     } catch (error) {
-                        document.getElementById('listDataStudent').innerHTML = '<span style="color: red;">ไม่พบข้อมูล</span>';
-                        console.error('มีข้อผิดพลาด:', error);
+                        document.getElementById('listDataStudent').innerHTML = `<span style="color: red;">${error.message}</span>`;
                         closebtnloading('btnSerachDataStudent', 'spinnerSerachDataStudent', 'btnSerachDataStudentText', '<i class="fa-solid fa-magnifying-glass"></i> ค้นหาข้อมูล');
                     }
                 }
@@ -1082,7 +1142,7 @@
                     document.getElementById("tbIDNumber_" + getIndex).innerText = selectedValueSplit[0]
                     document.getElementById("tbFullNameTH_" + getIndex).innerText = selectedValueSplit[1] + ' ' + selectedValueSplit[2];
 
-                    console.log(document.getElementById('CourseID_' + getIndex).value);
+                    // console.log(document.getElementById('CourseID_' + getIndex).value);
                     if (document.getElementById('CourseID_' + getIndex).value == null || document.getElementById('CourseID_' + getIndex).value == "") {
                         document.getElementById('CourseID_' + getIndex).value = null;
                     }
@@ -1091,7 +1151,7 @@
                     }
                     document.getElementById('CardFieldIDNumber').style.display = 'none';
                     document.getElementById('IsConfirmfieldIDNumber').style.display = 'block';
-                    document.getElementById('IsConfirmfieldIDNumber').innerHTML = '<div class="alert alert-success" role="alert"><i class="fa-solid fa-circle-check fa-xl"></i> ยืนยันแล้ว !!! <a onclick="editSerachData()" class="alert-link" style="margin-left: 2%; cursor: pointer;">แก้ไข</a></div>';
+                    document.getElementById('IsConfirmfieldIDNumber').innerHTML = '<div class="alert alert-success" role="alert"><i class="fa-solid fa-circle-check fa-xl"></i> เลือกแล้ว !!! <a onclick="editSerachData()" class="alert-link" style="margin-left: 2%; cursor: pointer;">แก้ไข</a></div>';
 
                 } else {
                     alert("กรุณาเลือก !!!");
@@ -1152,8 +1212,14 @@
 
                             if (!response.ok) {
                                 document.getElementById("tbCourseID_" + index).innerText = null;
-                                throw new Error('ไม่พบข้อมูล');
                                 closebtnloading('btnSerachDataCourseID', 'spinnerSerachDataCourseID', 'btnSerachDataCourseIDText', '<i class="fa-solid fa-magnifying-glass"></i> ค้นหารหัสวิชา');
+                                // console.log('!response.ok');
+                                document.getElementById('fieldCourseID').style.display = 'block';
+                                document.getElementById('tbNote_' + index).textContent = 'รหัสวิชาไม่ถูกต้อง';
+                                let errorMessage = await response.text();
+                                // console.log(errorMessage);
+                                lmCourseID.innerHTML = '<span style="color: red;">'+ errorMessage +'</span>';
+                                throw new Error(errorMessage || 'ไม่พบข้อมูล');
                             }
 
                             let data = await response.json();
@@ -1164,18 +1230,21 @@
                                 if (data.length == 0) {
                                     document.getElementById("tbCourseID_" + index).innerText = null;
                                     console.log('mode singlerow if');
+                                    document.getElementById('fieldCourseID').style.display = 'block';
+                                    document.getElementById('tbNote_' + index).textContent = 'รหัสวิชาไม่ถูกต้อง';
                                 } else {
                                     data.forEach((datasiggle) => {
                                         var selectedValueSplit = datasiggle.CourseDetail.split(":");
                                         document.getElementById("tbCourseID_" + index).innerText = selectedValueSplit[0];
                                         document.getElementById("tbCourseNameTH_" + index).innerText = selectedValueSplit[1];
-                                        console.log(datasiggle.CourseDetail);
+                                        // console.log(datasiggle.CourseDetail);
                                     });
                                 }
                             }
                             else {
                                 if (data.length == 0) {
                                     lmCourseID.innerHTML += '<span style="color: red;">ไม่พบข้อมูล</span>';
+                                    console.log('data.length == 0');
                                 } else {
 
                                     data.forEach((dataC, idx) => {
@@ -1201,15 +1270,14 @@
                                         `;
                                     });
 
-                                    document.getElementById('btnChooseCourse').innerHTML = '<button type="button" class="btn btn-success mb-3" onclick="showSelectedCourseValue()">ยืนยัน</button>';
+                                    document.getElementById('btnChooseCourse').innerHTML = '<button type="button" class="btn btn-success mb-3" onclick="showSelectedCourseValue()">เลือก</button>';
                                 }
                             }
 
                             closebtnloading('btnSerachDataCourseID', 'spinnerSerachDataCourseID', 'btnSerachDataCourseIDText', '<i class="fa-solid fa-magnifying-glass"></i> ค้นหารหัสวิชา');
 
                         } catch (error) {
-                            document.getElementById('listCourseID').innerHTML = '<span style="color: red;">ไม่พบข้อมูล</span>';
-                            console.error('มีข้อผิดพลาด:', error);
+                            document.getElementById('listDataStudent').innerHTML = `<span style="color: red;">${error.message}</span>`;
                             closebtnloading('btnSerachDataCourseID', 'spinnerSerachDataCourseID', 'btnSerachDataCourseIDText', '<i class="fa-solid fa-magnifying-glass"></i> ค้นหารหัสวิชา');
                         }
                     }
@@ -1319,7 +1387,7 @@
 
                     document.getElementById('CardFieldCourseID').style.display = 'none';
                     document.getElementById('IsConfirmfieldCourseID').style.display = 'block';
-                    document.getElementById('IsConfirmfieldCourseID').innerHTML = '<div class="alert alert-success" role="alert"><i class="fa-solid fa-circle-check fa-xl"></i> ยืนยันแล้ว !!! <a onclick="editSerachCourse()" class="alert-link" style="margin-left: 2%; cursor: pointer;">แก้ไข</a></div>';
+                    document.getElementById('IsConfirmfieldCourseID').innerHTML = '<div class="alert alert-success" role="alert"><i class="fa-solid fa-circle-check fa-xl"></i> เลือกแล้ว !!! <a onclick="editSerachCourse()" class="alert-link" style="margin-left: 2%; cursor: pointer;">แก้ไข</a></div>';
                 } else {
                     alert("กรุณาเลือก !!!");
                     closebtnloading('btnSerachDataCourseID', 'spinnerSerachDataCourseID', 'btnSerachDataCourseIDText', '<i class="fa-solid fa-magnifying-glass"></i> ค้นหารหัสวิชา');
@@ -1654,9 +1722,9 @@
                             body: JSON.stringify(pairedValues)
                         })
                             .then(response => {
-                                console.log(response)
+                                // console.log(response)
                                 if (response.ok) {
-                                    console.log("Edit_CheckPass => " + CheckPass)
+                                    // console.log("Edit_CheckPass => " + CheckPass)
                                     return response.json();
 
                                 } else {
@@ -1666,7 +1734,7 @@
 
                             })
                             .then(data => {
-                                console.log(data)
+                                // console.log(data)
                                 if (data.message == 'Fail') {
 
                                     document.getElementById('tbCourseID_' + idx).innerHTML = data.CourseID;
@@ -1703,8 +1771,8 @@
                                     document.getElementById('tbCourseID_' + idx).innerHTML = data.CourseID;
                                     document.getElementById('tbFullNameTH_' + idx).innerHTML = data.NameTH;
 
-                                    console.log('Message:', data.message);
-                                    console.log('Score:', data.Score);
+                                    // console.log('Message:', data.message);
+                                    // console.log('Score:', data.Score);
                                     // console.log('CourseNameTH:', data.CourseNameTH);
                                     // console.log('CourseID:', data.CourseID);
                                     // console.log('NameTH:', data.NameTH);
@@ -1714,10 +1782,10 @@
                             })
                             .catch(error => {
                                 CheckPass = '0';
-                                console.log("Edit_CheckPass => " + CheckPass)
+                                // console.log("Edit_CheckPass => " + CheckPass)
                                 notshowLoading();
                                 OnClickOption(idx, idA1, idB1);
-                                console.log("EditCatch_CheckPass => " + CheckPass)
+                                // console.log("EditCatch_CheckPass => " + CheckPass)
                             });
                         break;
 
@@ -1774,7 +1842,7 @@
 
                         break;
                 }
-                console.log(pairedValues);
+                // console.log(pairedValues);
             }
         </script>
 
