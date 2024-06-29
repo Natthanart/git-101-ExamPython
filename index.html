@@ -199,12 +199,44 @@
             success: function (response, textStatus, jqXHR) {
                 var uniqueValues = new Set();
                 response.forEach(function (item) {
-                    uniqueValues.add(`${item.CourseDetail} -  ${item.TypeName}`);
+                    var labelSymbol;
+                    var labelSymbolGrade;
+                    if (item.TypeName === 'ลงทะเบียน') {
+                        labelSymbol = '🟢';
+                    }
+                    else if (item.TypeName === 'แผนการเรียน'){
+                        labelSymbol = '🔵';
+                    }
+                    else if (item.TypeName === 'แผนเทียบโอน'){
+                        labelSymbol = '🟡';
+                    }
+                    else if (item.TypeName === 'โครงสร้าง'){
+                        labelSymbol = '🟣';
+                    }
+                    else if (item.TypeName === 'นอกโครงสร้าง'){
+                        labelSymbol = '🔴';
+                    }
+                    else {
+                        labelSymbol = '';
+                    }
+
+                    if(item.IsGrade === "1"){
+                        labelSymbolGrade = '🅰';
+                    }
+                    else {
+                        labelSymbolGrade = '';
+                    }
+
+                    uniqueValues.add({
+                        value: `${item.CourseDetail} -  ${item.TypeName}`,
+                        label: `${labelSymbol} ${labelSymbolGrade} ${item.CourseDetail} - ${item.TypeName}`
+                    });
                 });
-                uniqueValues.forEach(function (value) {
+                uniqueValues.forEach(function (item) {
                     var option = $('<option>', {
-                        value: value.split(':')[0],
-                        text: value,
+                        value: item.value.split(':')[0],
+                        text: item.value,
+                        label: item.label,
                     });
 
                     $('#listItem' + '_' + ListItem).append(option);
