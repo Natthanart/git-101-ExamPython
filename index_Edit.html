@@ -615,16 +615,7 @@
                                 </div>
                             </div>
                         </div>
-
-
-                        {% with messages = get_flashed_messages() %}
-                        {% if messages %}
-
-                        {% for message in messages %}
-                        <p style=" color: red;">{{ message }}</p>
-                        {% endfor %}
-                        {% endif %}
-                        {% endwith %}
+                        <p style=" color: red;" id="errorMsg"></p>
                     </div>
                 </div>
             </div>
@@ -1736,7 +1727,17 @@
 
                             if (item.Status != "RetakePhoto") {
 
-                                celloption.innerHTML = '<button onclick="OnClickOption(' + item.ID + ',' + strIDNumber + ',' + strCourseID + ')" type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#Option"><i class="fa-solid fa-triangle-exclamation fa-lg"></i></button>';
+                                // celloption.innerHTML = '<button onclick="OnClickOption(' + item.ID + ',' + strIDNumber + ',' + strCourseID + ')" type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#Option"><i class="fa-solid fa-triangle-exclamation fa-lg"></i></button>';
+                                celloption.innerHTML = `
+                                    <div class="d-flex flex-column align-items-center">
+                                        <button onclick="OnClickOption(${item.ID}, ${strIDNumber}, ${strCourseID})" type="button" class="btn btn-warning mb-2" data-bs-toggle="modal" data-bs-target="#Option">
+                                            <i class="fa-solid fa-triangle-exclamation fa-lg"></i>
+                                        </button>
+                                        <button style="display: none;" id="testedit_${item.ID}" onclick="testEdit(${item.ID})" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#Option">
+                                            <i class="fa-solid fa-pen"></i>
+                                        </button>
+                                    </div>
+                                `;
                                 celloption.setAttribute('data-title', 'แก้ปัญหา');
                                 celloption.style.textAlign = 'center';
                                 // celloption.setAttribute('id', index);
@@ -1799,8 +1800,6 @@
 
         <script>
             function EditFormAnswer(mode, idx) {
-
-
 
                 let idNumber = document.getElementsByName('tbIDNumber');
                 let courseID = document.getElementsByName('tbCourseID');
@@ -2232,7 +2231,11 @@
                 document.getElementById('fieldCourseID').style.display = 'block';
                 editSerachCourse();
 
-                document.getElementById('IDNumber_' + id).value = tbidnumber;
+                if(tbidnumber.length > 10){
+                    document.getElementById('IDNumber_' + id).value = tbidnumber;
+                } else {
+                    document.getElementById('StudentID_' + id).value = tbidnumber;
+                }
                 document.getElementById('CourseID_' + id).value = tbcourseid;
             }
         </script>
